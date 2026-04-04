@@ -8,6 +8,9 @@ class Home extends Component
 {
     public function render()
     {
-        return view('livewire.pages.home');
+        $videos = \App\Models\Video::all(); // Ambil semua video dari database
+        return view('livewire.pages.home', [
+            'videos' => $videos,
+        ]);
     }
 }

@@ -12,11 +12,22 @@ export default {
     theme: {
         extend: {
             colors: {
-                'shutter-copper': '#BC6C25', // Primary Action/Brand
-                'porsche': '#DDA15E',        // Secondary/Accent
-                'rocket-fuel': '#FEFAE0',    // Main Background
-                'ceylanite': '#283618',      // Header/Footer/Dark Text
-                'cedar-green': '#606C38',    // Deep accents
+                'riak': {
+                    // Warna Emas Utama (Honey Quartz)
+                    'honey': '#F7B720',
+
+                    // Warna Alam/Daun (Riak Khaki)
+                    'khaki': '#6D7636',
+
+                    // Warna Kontras/Mewah (Royal Army)
+                    'army': '#2E3317',
+
+                    // Warna Aksen Hangat (Sunset Persimmon)
+                    'persimmon': '#E67E22',
+
+                    // Warna Background Utama (Spring Cream)
+                    'cream': '#FEFAE0',
+                },
             },
             fontFamily: {
                 sans: ['Inter', 'serif'], // Nuansa organik 

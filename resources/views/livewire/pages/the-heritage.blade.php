@@ -1,17 +1,26 @@
-<div class="bg-white min-h-screen selection:bg-[#BC6C25]/20">
+<div class="bg-white min-h-screen selection:bg-riak-honey/30">
 
     <header class="pt-40 pb-20 px-6 text-center">
         <div class="max-w-4xl mx-auto">
             <h2
-                class="text-[#BC6C25] text-[11px] font-bold uppercase tracking-[0.6em] mb-6 animate-[fadeIn_1s_ease-out]">
-                Digital Archive
+                class="text-riak-honey text-[11px] font-bold uppercase tracking-[0.6em] mb-6 animate-[fadeIn_1s_ease-out]">
+                @id
+                    Arsip Digital
+                @endid @en Digital Archive @enden
             </h2>
-            <h1 class="text-5xl md:text-7xl font-serif text-[#283618] leading-tight mb-8">
-                Filosofi <span class="italic font-light text-[#DDA15E]">Motif</span>
+            <h1 class="text-5xl md:text-7xl font-serif text-riak-army leading-tight mb-8">
+                @id
+                    Filosofi <span class="italic font-light text-riak-persimmon">Motif</span>
+                @endid
+                @en Motif <span class="italic font-light text-riak-persimmon">Philosophy</span> @enden
             </h1>
-            <p class="text-[#606C38] font-light text-sm md:text-base max-w-2xl mx-auto leading-[2]">
-                Menelusuri jejak sulaman emas tradisional Banjar. Setiap riak benang dan tata letak manik-manik
-                menyimpan cerita tentang kearifan lokal yang abadi.
+            <p class="text-riak-khaki font-light text-sm md:text-base max-w-2xl mx-auto leading-[2]">
+                @id
+                    Menelusuri jejak sulaman emas tradisional Banjar. Setiap riak benang dan tata letak manik-manik
+                    menyimpan cerita tentang kearifan lokal yang abadi.
+                @endid
+                @en Tracing the legacy of traditional Banjar gold embroidery. Every twist of thread and arrangement of
+                beads holds a story of enduring local wisdom. @enden
             </p>
         </div>
     </header>
@@ -19,107 +28,76 @@
     <section class="max-w-7xl mx-auto px-6 pb-32">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-start">
 
-            <div class="group" x-data="{ open: false }">
-                <div
-                    class="relative aspect-[4/5] rounded-3xl overflow-hidden bg-[#F9F9F9] mb-8 shadow-sm transition-all duration-700 group-hover:shadow-2xl">
-                    <img src="/assets/motif-air-guci.jpg" alt="Motif Riak Air"
-                        class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110">
-
-                    <div class="absolute top-8 left-8">
-                        <span
-                            class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#283618]">
-                            Signature Motif
-                        </span>
-                    </div>
-                </div>
-
-                <div class="space-y-4 px-2">
-                    <h3 class="text-3xl font-serif text-[#283618] italic tracking-wide">Riak Air Guci</h3>
-                    <div class="w-12 h-[1px] bg-[#DDA15E]"></div>
-                    <p class="text-[#606C38] text-sm leading-[1.8] font-light max-w-md">
-                        Melambangkan ketenangan namun memiliki kekuatan yang konsisten. Seperti air yang tenang di dalam
-                        guci, motif ini menggambarkan kerendahan hati dan kedalaman ilmu yang bermanfaat bagi sesama.
-                    </p>
-                </div>
-            </div>
-
-            <div class="group md:mt-32">
-                <div
-                    class="relative aspect-[4/5] rounded-3xl overflow-hidden bg-[#F9F9F9] mb-8 shadow-sm transition-all duration-700 group-hover:shadow-2xl">
-                    <img src="/assets/motif-pucuk-rebung.jpg" alt="Motif Pucuk Rebung"
-                        class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110">
-
-                    <div class="absolute top-8 left-8">
-                        <span
-                            class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#283618]">
-                            Classic Banjar
-                        </span>
-                    </div>
-                </div>
-
-                <div class="space-y-4 px-2">
-                    <h3 class="text-3xl font-serif text-[#283618] italic tracking-wide">Pucuk Rebung</h3>
-                    <div class="w-12 h-[1px] bg-[#DDA15E]"></div>
-                    <p class="text-[#606C38] text-sm leading-[1.8] font-light max-w-md">
-                        Mengambil bentuk tunas bambu yang selalu tumbuh menjulang. Sebuah simbol harapan agar pemakainya
-                        selalu memiliki tekad untuk maju dan bermanfaat sejak usia muda hingga tua.
-                    </p>
-                </div>
-            </div>
-
-            <div class="group">
-                <div
-                    class="relative aspect-[4/5] rounded-3xl overflow-hidden bg-[#F9F9F9] mb-8 shadow-sm transition-all duration-700 group-hover:shadow-2xl">
-                    <img src="/assets/motif-bunga-melati.jpg" alt="Motif Melati"
-                        class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110">
-                </div>
-
-                <div class="space-y-4 px-2">
-                    <h3 class="text-3xl font-serif text-[#283618] italic tracking-wide">Kembang Melati</h3>
-                    <div class="w-12 h-[1px] bg-[#DDA15E]"></div>
-                    <p class="text-[#606C38] text-sm leading-[1.8] font-light max-w-md">
-                        Melambangkan kesucian dan keharuman budi pekerti. Dalam sulaman emas Riak Air Guci, manik-manik
-                        putih diletakkan secara presisi untuk mencerminkan kelembutan karakter masyarakat Banjar.
-                    </p>
-                </div>
-            </div>
-
-            <div class="group md:mt-32">
-                <div
-                    class="relative aspect-[4/5] rounded-3xl overflow-hidden bg-[#283618] mb-8 shadow-sm transition-all duration-700 group-hover:shadow-2xl">
-                    <img src="/assets/motif-upcycled.jpg" alt="Upcycled Motif"
-                        class="w-full h-full object-cover opacity-80 grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110">
-
+            @forelse($motifs as $motif)
+                <div class="group {{ $loop->iteration % 2 == 0 ? 'md:mt-32' : '' }}">
                     <div
-                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                        <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-full">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 4v16m8-8H4" stroke-width="1.5" />
-                            </svg>
-                        </div>
+                        class="relative aspect-[4/5] rounded-3xl overflow-hidden bg-white mb-8 shadow-sm transition-all duration-700 group-hover:shadow-2xl">
+                        <img src="{{ asset('storage/' . $motif->image) }}" alt="{{ $motif->name }}"
+                            class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 {{ $motif->is_upcycled ? 'opacity-80 grayscale group-hover:grayscale-0' : '' }}">
+
+                        @if ($motif->badge)
+                            <div class="absolute top-8 left-8">
+                                <span
+                                    class="bg-riak-cream/90 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-riak-army">
+                                    {{ $motif->badge }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="space-y-4 px-2">
+                        <h3
+                            class="text-3xl font-serif text-riak-army italic tracking-wide group-hover:text-riak-honey transition-colors">
+                            {{ $motif->name }}
+                        </h3>
+                        <div class="w-12 h-[1px] bg-riak-honey"></div>
+                        <p class="text-riak-khaki text-sm leading-[1.8] font-light max-w-md">
+                            {{ $motif->description }}
+                        </p>
                     </div>
                 </div>
 
-                <div class="space-y-4 px-2">
-                    <h3 class="text-3xl font-serif text-[#283618] italic tracking-wide">Limbah Karya</h3>
-                    <div class="w-12 h-[1px] bg-[#DDA15E]"></div>
-                    <p class="text-[#606C38] text-sm leading-[1.8] font-light max-w-md">
-                        Filosofi modern tentang keberlanjutan. Memanfaatkan sisa kain perca yang dirangkai ulang dengan
-                        sulaman emas, membuktikan bahwa nilai sejarah tidak akan pernah terbuang.
+            @empty
+                <div
+                    class="col-span-full py-32 flex flex-col items-center justify-center border-2 border-dashed border-riak-honey/20 rounded-[3rem] bg-riak-honey/5 text-center">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-8">
+                        <svg class="w-10 h-10 text-riak-honey/30" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-serif text-riak-army italic mb-3">
+                        @id
+                            Arsip belum tersedia
+                        @endid
+                        @en Archive currently unavailable @enden
+                    </h4>
+                    <p class="text-riak-khaki text-[11px] uppercase tracking-[0.3em] font-bold opacity-60">
+                        @id
+                            Kami sedang mengkurasi jejak warisan emas Banjar
+                        @endid
+                        @en We are currently curating the golden heritage of Banjar @enden
                     </p>
                 </div>
-            </div>
+            @endforelse
 
         </div>
     </section>
 
-    <section class="bg-[#F9F9F9] py-24 text-center border-t border-[#DDA15E]/10">
-        <h4 class="text-[#BC6C25] text-[10px] font-black uppercase tracking-[0.4em] mb-8">Ready to Own a Piece of
-            History?</h4>
-        <a href="/shop"
-            class="group relative inline-flex items-center gap-6 text-[#283618] font-serif text-2xl italic tracking-widest transition-all">
-            Explore Collection
-            <span class="w-12 h-[1px] bg-[#BC6C25] transition-all group-hover:w-20"></span>
+    <section class="bg-riak-cream py-24 text-center border-t border-riak-honey/10">
+        <h4 class="text-riak-honey text-[10px] font-black uppercase tracking-[0.4em] mb-8">
+            @id
+                Siap Memiliki Potongan Sejarah?
+            @endid
+            @en Ready to Own a Piece of History? @enden
+        </h4>
+        <a href="{{ route('gallery') }}" wire:navigate
+            class="group relative inline-flex items-center gap-6 text-riak-army font-serif text-2xl italic tracking-widest transition-all">
+            @id
+                Jelajahi Koleksi
+            @endid @en Explore Collection @enden
+            <span class="w-12 h-[1px] bg-riak-persimmon transition-all group-hover:w-20"></span>
         </a>
     </section>
 </div>

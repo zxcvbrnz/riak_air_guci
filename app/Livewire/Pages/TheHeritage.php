@@ -8,6 +8,9 @@ class TheHeritage extends Component
 {
     public function render()
     {
-        return view('livewire.pages.the-heritage');
+        $motifs = \App\Models\Motif::orderBy('order')->get(); // Ambil semua motif dari database, urutkan berdasarkan kolom 'order'
+        return view('livewire.pages.the-heritage', [
+            'motifs' => $motifs,
+        ]);
     }
 }
