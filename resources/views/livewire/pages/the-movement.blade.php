@@ -61,7 +61,7 @@
                         <h3 class="font-serif text-xl text-riak-army mb-3 italic">{{ $school->title }}</h3>
                         <p class="text-riak-khaki text-xs font-light leading-relaxed mb-6 line-clamp-2">
                             {{ $school->description }}</p>
-                        <a href="{{ $school->type == 'video' ? $school->video_url : '#' }}"
+                        <a href="{{ route('movement.show', $school->slug) }}" wire:navigate
                             class="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-riak-honey group/link">
                             @id
                                 Lihat Dokumentasi
@@ -127,7 +127,7 @@
                             <h3 class="text-xl font-serif text-riak-cream italic mb-1">{{ $artisan->name }}</h3>
                             <p class="text-riak-persimmon text-[9px] font-bold uppercase tracking-widest mb-6">
                                 {{ $artisan->role }}</p>
-                            <a href="#"
+                            <a href="{{ route('artisan.show', $artisan->slug) }}" wire:navigate
                                 class="inline-block w-full py-3 rounded-xl border border-white/10 text-riak-cream text-[9px] font-bold uppercase tracking-widest hover:bg-riak-cream hover:text-riak-army transition-all duration-300">
                                 @id
                                     Detail Profil
@@ -166,19 +166,29 @@
                     <p class="text-riak-khaki font-light text-sm md:text-base leading-relaxed mb-10">
                         @id
                             Saatnya sekolah kalian menjadi bagian dari gerakan pelestarian budaya! Mari berkolaborasi
-                            bersama kami dalam workshop, pameran, dan program edukasi kreatif berbasis sulam Air Guci.
+                            bersama kami dalam workshop, pameran, dan program edukasi kreatif berbasis sulam Air Guci untuk
+                            menghadirkan pengalaman budaya yang nyata dan berdampak!.
                         @endid
-                        @en Join the cultural preservation movement! Let’s collaborate on workshops, exhibitions, and
-                        creative educational programs centered around Air Guci embroidery. @enden
+                        @en It's time for your school to join the cultural preservation movement! Let's collaborate on
+                        workshops, exhibitions, and creative educational programs centered around Air Guci embroidery to
+                        create authentic and impactful cultural experiences!. @enden
                     </p>
 
                     <div class="flex flex-wrap gap-4">
-                        <a href="https://wa.me/6285249558488" target="_blank"
-                            class="bg-riak-army text-riak-cream px-10 py-5 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-riak-honey transition-all shadow-xl shadow-riak-army/10">
-                            @id
-                                Hubungi Kami Via WhatsApp
-                            @endid @en Contact Us via WhatsApp @enden
-                        </a>
+                        <div class="flex gap-4 whitespace-nowrap">
+                            <a href="https://wa.me/6285249558488" target="_blank"
+                                class="bg-[#283618] text-[#FEFAE0] px-10 py-5 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#BC6C25] transition-all shadow-xl shadow-[#283618]/10">
+                                @id
+                                    Hubungi Kami Via WhatsApp
+                                @endid @en Contact Us via WhatsApp @enden
+                            </a>
+                            <a href="mailto:pusakabanua.id@gmail.com"
+                                class="border border-[#283618]/20 text-[#283618] px-10 py-5 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#283618] hover:text-[#FEFAE0] transition-all">
+                                @id
+                                    Hubungi Kami Via Email
+                                @endid @en Contact Us Via Email @enden
+                            </a>
+                        </div>
                     </div>
                 </div>
 

@@ -7,8 +7,13 @@ use Illuminate\Support\Facades\App;
 
 class MovementSchool extends Model
 {
-    protected $fillable = ['label_id', 'label_en', 'title_id', 'title_en', 'description_id', 'description_en', 'media_path', 'type', 'video_url', 'order'];
+    protected $fillable = ['slug', 'label_id', 'label_en', 'title_id', 'title_en', 'description_id', 'description_en', 'media_path', 'type', 'video_url', 'order'];
 
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     public function getLabelAttribute()
     {
         return App::getLocale() == 'en' ? $this->label_en : $this->label_id;

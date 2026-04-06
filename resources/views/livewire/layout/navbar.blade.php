@@ -2,7 +2,7 @@
     atTop: true,
     mobileMenu: false,
     appLocale: '{{ app()->getLocale() }}',
-    isHome: {{ Route::is('home') ? 'true' : 'false' }},
+    isHome: {{ Route::is('home') || Route::is('artisan.show') || Route::is('trip.show') ? 'true' : 'false' }},
     scrollHandler() {
         this.atTop = window.pageYOffset < 50;
     }

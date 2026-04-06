@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('cultural_trips', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique();
             $table->string('title_id');
             $table->string('title_en');
             $table->string('duration'); // 3D 2N

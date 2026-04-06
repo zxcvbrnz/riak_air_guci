@@ -45,12 +45,12 @@
                     </h3>
                     <p class="text-sm text-riak-honey font-serif italic mb-4">IDR
                         {{ number_format($product->price, 0, ',', '.') }}</p>
-                    <button
-                        class="w-full bg-riak-army text-riak-cream py-4 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all hover:bg-riak-honey">
+                    <a href="{{ $product->link_shopee }}" target="_blank"
+                        class="w-full bg-riak-army text-riak-cream py-4 text-center rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all hover:bg-riak-honey">
                         @id
                             Beli Sekarang
                         @endid @en Buy Now @enden
-                    </button>
+                    </a>
                 </div>
             @empty
                 @foreach (range(1, 4) as $i)
@@ -102,12 +102,12 @@
                                 <h4 class="text-xl text-riak-honey font-serif mb-6">IDR
                                     {{ number_format($kit->price, 0, ',', '.') }}</h4>
                             </div>
-                            <button
-                                class="w-full border border-riak-cream/30 text-riak-cream py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-riak-cream hover:text-riak-army transition-all">
+                            <a href="{{ $kit->link_shopee }}" target="_blank"
+                                class="w-full border border-riak-cream/30 text-center text-riak-cream py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-riak-cream hover:text-riak-army transition-all">
                                 @id
                                     Beli Sekarang
                                 @endid @en Buy Now @enden
-                            </button>
+                            </a>
                         </div>
                     </div>
                 @empty
@@ -160,12 +160,12 @@
                             class="max-h-0 overflow-hidden opacity-0 group-hover:max-h-40 group-hover:opacity-100 group-hover:mb-8 transition-all duration-700 text-riak-cream/80 text-sm font-light leading-relaxed max-w-sm">
                             {{ $trip->description }}
                         </p>
-                        <button
-                            class="w-full bg-riak-cream text-riak-army py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-riak-honey hover:text-white transition-all duration-500 shadow-xl">
+                        <a href="{{ route('trip.show', $trip->slug) }}" wire:navigate
+                            class="w-full bg-riak-cream text-riak-army py-5 rounded-2xl text-[10px] text-center font-black uppercase tracking-[0.3em] hover:bg-riak-honey hover:text-white transition-all duration-500 shadow-xl">
                             @id
                                 Pesan Pengalaman
                             @endid @en Book Your Experience @enden
-                        </button>
+                        </a>
                     </div>
                 </div>
             @empty

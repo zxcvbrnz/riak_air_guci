@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\App;
 
 class Artisan extends Model
 {
-    protected $fillable = ['name', 'role_id', 'role_en', 'quote_id', 'quote_en', 'description_id', 'description_en', 'photo', 'order'];
+    protected $fillable = ['slug', 'name', 'role_id', 'role_en', 'quote_id', 'quote_en', 'description_id', 'description_en', 'photo', 'order'];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     public function getRoleAttribute()
     {
         return App::getLocale() == 'en' ? $this->role_en : $this->role_id;

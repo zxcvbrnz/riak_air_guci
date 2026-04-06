@@ -34,3 +34,7 @@
     background-color: #BC6C25 !important;
     box-shadow: 0 0 10px rgba(188, 108, 37, 0.7) !important;
 }
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}

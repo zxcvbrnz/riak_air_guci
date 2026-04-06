@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('movement_schools', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique();
             $table->string('label_id'); // Rangkai Ilmu
             $table->string('label_en'); // Education Series
             $table->string('title_id');

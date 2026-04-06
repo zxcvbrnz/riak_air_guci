@@ -113,87 +113,176 @@
         </div>
     </section>
 
-    <section class="bg-white py-32 px-6 overflow-hidden" x-data="{
-        activeVideo: 1,
+    <section class="bg-white py-24 px-6 overflow-hidden" x-data="{
         openModal: false,
         currentVideoUrl: '',
-        videos: {{ $videos->toJson() }}
+        // Fungsi untuk konversi URL YouTube biasa ke embed
+        getEmbedUrl(url) {
+            if (!url) return '';
+            let videoId = '';
+            if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+            else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1];
+            return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : url;
+        }
     }">
+
         <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                <div class="max-w-2xl">
-                    <h2 class="text-riak-khaki text-[11px] font-black tracking-[0.5em] uppercase mb-4">
-                        @id
-                            Jelajahi Digital
-                        @endid @en Digital Tour @enden
-                    </h2>
-                    <h3 class="text-4xl md:text-6xl font-serif text-riak-army leading-tight">
-                        @id
-                            Saksikan <span class="italic font-light text-riak-honey">Perjalanan Kami</span>
-                        @endid
-                        @en Watch Our <span class="italic font-light text-riak-honey">Journey</span> @enden
-                    </h3>
+            <div class="flex items-end justify-between mb-10 gap-6">
+                <div class="max-w-md">
+                    <h2 class="text-riak-khaki text-[9px] font-black tracking-[0.4em] uppercase mb-2">Digital Tour</h2>
+                    <h3 class="text-3xl font-serif text-riak-army">Saksikan <span
+                            class="italic font-light text-riak-honey">Perjalanan</span></h3>
                 </div>
 
-                <div class="flex gap-4">
-                    <button @click="$refs.slider.scrollBy({left: -400, behavior: 'smooth'})"
-                        class="w-12 h-12 rounded-full border border-riak-army/10 flex items-center justify-center hover:bg-riak-honey hover:text-riak-army transition-all duration-500 hover:border-riak-honey">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M15 19l-7-7 7-7" />
+                <div class="flex gap-2">
+                    <button @click="$refs.slider.scrollBy({left: -300, behavior: 'smooth'})"
+                        class="w-10 h-10 rounded-full border border-riak-army/10 flex items-center justify-center hover:bg-riak-honey transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button @click="$refs.slider.scrollBy({left: 400, behavior: 'smooth'})"
-                        class="w-12 h-12 rounded-full border border-riak-army/10 flex items-center justify-center hover:bg-riak-honey hover:text-white transition-all duration-500 hover:border-riak-honey">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+                    <button @click="$refs.slider.scrollBy({left: 300, behavior: 'smooth'})"
+                        class="w-10 h-10 rounded-full border border-riak-army/10 flex items-center justify-center hover:bg-riak-honey transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
                 </div>
             </div>
 
-            <div x-ref="slider" class="flex gap-8 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-12">
+            <div x-ref="slider"
+                class="flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-8 items-stretch">
                 @forelse ($videos as $video)
-                    <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[30%] snap-start group cursor-pointer"
-                        @click="openModal = true; currentVideoUrl = '{{ $video->video_url }}'">
+                    <div class="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer"
+                        @click="currentVideoUrl = getEmbedUrl('{{ $video->video_url }}'); openModal = true">
 
                         <div
-                            class="relative aspect-[16/10] rounded-3xl overflow-hidden bg-riak-army mb-6 shadow-sm group-hover:shadow-[0_20px_40px_-15px_rgba(46,51,23,0.3)] transition-all duration-700">
+                            class="relative aspect-video rounded-2xl overflow-hidden bg-riak-army mb-4 shadow-sm group-hover:shadow-xl transition-all duration-500">
                             <img src="{{ asset('storage/' . $video->thumb) }}"
-                                class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-all duration-1000">
+                                class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-all duration-700">
 
-                            <div class="absolute inset-0 flex items-center justify-center">
+                            <div
+                                class="absolute inset-0 flex items-center justify-center bg-riak-army/20 group-hover:bg-transparent transition-all">
                                 <div
-                                    class="w-14 h-14 rounded-full bg-riak-cream/20 backdrop-blur-md border border-riak-cream/30 flex items-center justify-center text-riak-honey group-hover:bg-riak-honey group-hover:text-riak-army transition-all duration-500">
-                                    <svg class="w-6 h-6 fill-current ml-1" viewBox="0 0 24 24">
+                                    class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-riak-honey group-hover:scale-110 transition-all">
+                                    <svg class="w-5 h-5 fill-current ml-1" viewBox="0 0 24 24">
                                         <path d="M8 5v14l11-7z" />
                                     </svg>
                                 </div>
                             </div>
+
+                            <span
+                                class="absolute bottom-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-md rounded text-[9px] text-white font-mono">
+                                {{ $video->duration }}
+                            </span>
                         </div>
 
-                        <div class="px-2">
-                            <span
-                                class="text-riak-persimmon text-[9px] font-black uppercase tracking-[0.3em] mb-2 block">
-                                {{ $video->category }}
-                            </span>
+                        <div class="px-1">
+                            <p class="text-riak-persimmon text-[8px] font-bold uppercase tracking-widest mb-1">
+                                {{ $video->category_id }}</p>
                             <h4
-                                class="text-riak-army text-lg font-serif italic tracking-wide group-hover:text-riak-honey transition-colors">
-                                {{ $video->title }}
+                                class="text-riak-army text-sm font-serif italic leading-snug group-hover:text-riak-honey transition-colors">
+                                {{ $video->title_id }}
                             </h4>
                         </div>
                     </div>
                 @empty
-                    <div
-                        class="w-full py-20 flex flex-col items-center justify-center border-2 border-dashed border-riak-khaki/20 rounded-[3rem] bg-riak-cream/50">
-                        <h4 class="font-serif text-riak-khaki text-xl italic mb-2">Belum ada jejak digital.</h4>
-                    </div>
                 @endforelse
             </div>
+        </div>
 
-            <div class="w-full h-[1px] bg-riak-army/5 mt-4 relative">
-                <div class="absolute top-0 left-0 h-full bg-riak-persimmon transition-all duration-500"
-                    :style="`width: ${(activeVideo / (videos.length || 1)) * 100}%`"></div>
+        <template x-teleport="body">
+            <div x-show="openModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10"
+                x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+
+                <div class="absolute inset-0 bg-riak-army/95 backdrop-blur-xl"
+                    @click="openModal = false; currentVideoUrl = ''"></div>
+
+                <div class="relative w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl"
+                    x-show="openModal" x-transition:enter="transition ease-out duration-500"
+                    x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+
+                    <template x-if="openModal">
+                        <iframe :src="currentVideoUrl" class="w-full h-full" frameborder="0"
+                            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                        </iframe>
+                    </template>
+
+                    <button @click="openModal = false; currentVideoUrl = ''"
+                        class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </section>
+    <section class="bg-white py-24 px-6 border-t border-[#DDA15E]/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                <div class="max-w-xl">
+                    <h2 class="text-[#BC6C25] text-[10px] font-bold uppercase tracking-[0.5em] mb-4">
+                        @id
+                            Agenda Terdekat
+                        @endid @en Upcoming Agenda @enden
+                    </h2>
+                    <h3 class="text-4xl font-serif text-[#283618] italic">
+                        @id
+                            Langkah Gerak Riak
+                        @endid @en Riak's Movement @enden
+                    </h3>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-12">
+                @php $locale = app()->getLocale(); @endphp
+
+                @forelse($schedules as $item)
+                    <div
+                        class="flex items-start gap-8 group pb-8 border-b border-[#DDA15E]/10 last:border-0 lg:last:border-b">
+                        <div class="text-center min-w-[60px]">
+                            <span class="block text-2xl font-serif italic text-[#BC6C25]">
+                                {{ \Carbon\Carbon::parse($item->date)->format('d') }}
+                            </span>
+                            <span class="block text-[10px] font-bold uppercase tracking-widest text-[#283618]/40">
+                                {{ \Carbon\Carbon::parse($item->date)->translatedFormat('M') }}
+                            </span>
+                        </div>
+
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span
+                                    class="w-2 h-2 rounded-full {{ $item->is_completed ? 'bg-gray-300' : 'bg-[#DDA15E] animate-pulse' }}"></span>
+                                <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#BC6C25]">
+                                    {{ $item->{'location_' . $locale} }}
+                                </span>
+                            </div>
+                            <h4
+                                class="text-xl font-serif text-[#283618] group-hover:text-[#BC6C25] transition-colors duration-500">
+                                {{ $item->{'title_' . $locale} }}
+                            </h4>
+                        </div>
+
+                        @if ($item->is_completed)
+                            <div class="hidden md:block">
+                                <span
+                                    class="text-[8px] font-bold uppercase border border-gray-200 text-gray-400 px-3 py-1 rounded-full">
+                                    Done
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+                @empty
+                    <p class="text-[#283618]/40 italic text-sm">
+                        @id
+                            Belum ada agenda terjadwal
+                        @endid @en No scheduled agenda @enden
+                    </p>
+                @endforelse
             </div>
         </div>
     </section>

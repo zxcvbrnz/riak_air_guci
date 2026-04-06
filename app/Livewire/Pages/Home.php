@@ -11,6 +11,10 @@ class Home extends Component
         $videos = \App\Models\Video::all(); // Ambil semua video dari database
         return view('livewire.pages.home', [
             'videos' => $videos,
+            'schedules' => \App\Models\InternalSchedule::where('date', '>=', now()->subDays(7)) // Tampilkan agenda seminggu terakhir hingga mendatang
+                ->orderBy('date', 'asc')
+                ->take(6)
+                ->get()
         ]);
     }
 }
