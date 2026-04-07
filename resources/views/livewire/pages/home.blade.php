@@ -94,7 +94,7 @@
                     gold beads, creating a harmony between ancient traditions and modern lifestyles. @enden
                 </p>
 
-                <a href="#"
+                <a href="https://www.instagram.com/riakairguci/"
                     class="inline-flex items-center gap-4 text-riak-persimmon text-[11px] font-bold uppercase tracking-widest group">
                     <span class="h-[1px] w-8 bg-riak-persimmon transition-all group-hover:w-12"></span>
                     @id
@@ -105,15 +105,15 @@
 
             <div class="relative p-4 bg-white shadow-[0_40px_80px_-20px_rgba(109,118,54,0.15)] rounded-3xl">
                 <div class="aspect-[4/5] rounded-2xl overflow-hidden">
-                    <img src="/assets/movement.jpg"
-                        class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-[3s]">
+                    <img src="{{ asset('IMG_7179 (1).PNG') }}"
+                        class="w-full h-full object-contain transform hover:scale-105 transition-transform duration-[3s]">
                 </div>
                 <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-riak-honey/10 rounded-full blur-2xl"></div>
             </div>
         </div>
     </section>
 
-    <section class="bg-white py-24 px-6 overflow-hidden" x-data="{
+    <section id="video-tutorial" class="bg-white py-24 px-6 overflow-hidden" x-data="{
         openModal: false,
         currentVideoUrl: '',
         // Fungsi untuk konversi URL YouTube biasa ke embed
@@ -129,9 +129,14 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex items-end justify-between mb-10 gap-6">
                 <div class="max-w-md">
-                    <h2 class="text-riak-khaki text-[9px] font-black tracking-[0.4em] uppercase mb-2">Digital Tour</h2>
-                    <h3 class="text-3xl font-serif text-riak-army">Saksikan <span
-                            class="italic font-light text-riak-honey">Perjalanan</span></h3>
+                    <h2 class="text-riak-khaki text-[9px] font-black tracking-[0.4em] uppercase mb-2">
+                        @id
+                            Panduan Kreatif
+                        @endid @en Creative Guide @enden
+                    </h2>
+                    <h3 class="text-3xl font-serif text-riak-army italic">
+                        Video <span class="font-light text-riak-persimmon tracking-tight">Tutorial</span>
+                    </h3>
                 </div>
 
                 <div class="flex gap-2">
@@ -187,6 +192,48 @@
                         </div>
                     </div>
                 @empty
+                    <div
+                        class="w-full flex flex-col items-center justify-center py-20 px-6 border-2 border-dashed border-riak-honey/20 rounded-[2rem] bg-riak-cream/30">
+                        <div class="relative mb-6">
+                            <div
+                                class="w-20 h-20 bg-riak-honey/10 rounded-full flex items-center justify-center animate-pulse">
+                                <svg class="w-10 h-10 text-riak-honey/60" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div class="absolute -bottom-2 -right-2 bg-white p-1 rounded-full shadow-sm">
+                                <svg class="w-4 h-4 text-riak-persimmon" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="text-center space-y-2">
+                            <h4 class="text-riak-army font-serif italic text-xl">
+                                @id
+                                    Tutorial Sedang Disiapkan
+                                @endid
+                                @en Tutorials are being prepared @enden
+                            </h4>
+                            <p
+                                class="text-riak-army/50 text-[10px] uppercase tracking-[0.3em] font-medium max-w-xs mx-auto leading-relaxed">
+                                @id
+                                    Kami sedang merangkai panduan kreatif untuk Anda. Nantikan segera.
+                                @endid
+                                @en We are crafting creative guides for you. Coming soon. @enden
+                            </p>
+                        </div>
+
+                        <div class="mt-8 flex gap-2">
+                            <div class="w-8 h-[1px] bg-riak-honey/30"></div>
+                            <div class="w-2 h-[1px] bg-riak-honey/30"></div>
+                            <div class="w-8 h-[1px] bg-riak-honey/30"></div>
+                        </div>
+                    </div>
                 @endforelse
             </div>
         </div>
@@ -286,4 +333,43 @@
             </div>
         </div>
     </section>
+
+    <div x-data="{ showBtn: true }" x-show="showBtn" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-10"
+        @scroll.window="showBtn = (window.pageYOffset < (document.getElementById('video-tutorial')?.offsetTop || 0) - 400)"
+        class="fixed bottom-28 right-6 z-[40]">
+
+        <a href="#video-tutorial"
+            class="group relative flex items-center gap-4 bg-riak-army/90 backdrop-blur-xl text-riak-cream px-7 py-4 rounded-full shadow-[0_20px_50px_rgba(40,54,24,0.3)] hover:bg-riak-honey hover:text-riak-army transition-all duration-500 border border-white/10">
+
+            <span class="absolute flex h-3 w-3 -top-1 -right-1">
+                <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-riak-persimmon opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-riak-persimmon"></span>
+            </span>
+
+            <div
+                class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-riak-army/20 transition-colors border border-white/20">
+                <svg class="w-3.5 h-3.5 fill-current ml-1" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+            </div>
+
+            <div class="flex flex-col items-start leading-none">
+                <span class="text-[8px] uppercase tracking-[0.3em] opacity-60 mb-1">Watch Now</span>
+                <span class="text-[10px] font-bold uppercase tracking-[0.2em] whitespace-nowrap">
+                    @id
+                        Video Tutorial
+                    @endid
+                    @en Video Tutorial @enden
+                </span>
+            </div>
+
+            <div
+                class="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+            </div>
+        </a>
+    </div>
 </div>

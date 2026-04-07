@@ -8,6 +8,7 @@
 
     <title>RIAK AIR GUCI - {{ $title ?? 'The Golden Heritage' }}</title>
 
+    <link rel="shortcut icon" href="{{ asset('IMG_7179 (1).PNG') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

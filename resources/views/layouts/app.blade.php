@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <title>RIAK AIR GUCI - {{ $title ?? 'The Golden Heritage' }}</title>
+
     <title>{{ config('app.name', 'Riak Admin') }}</title>
+    <link rel="shortcut icon" href="{{ asset('IMG_7179 (1).PNG') }}" type="image/x-icon">
+
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
