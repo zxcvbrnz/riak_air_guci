@@ -3,14 +3,17 @@
 namespace App\Livewire\Pages;
 
 use Livewire\Component;
+use App\Models\Motif;
 
 class TheHeritage extends Component
 {
     public function render()
     {
-        $motifs = \App\Models\Motif::orderBy('order')->get(); // Ambil semua motif dari database, urutkan berdasarkan kolom 'order'
+        // Ambil semua motif, urutkan, lalu kelompokkan berdasarkan 'badge'
+        $groupedMotifs = Motif::orderBy('order')->get()->groupBy('badge');
+
         return view('livewire.pages.the-heritage', [
-            'motifs' => $motifs,
+            'groupedMotifs' => $groupedMotifs,
         ]);
     }
 }

@@ -6,7 +6,8 @@
                 class="text-riak-honey text-[11px] font-bold uppercase tracking-[0.6em] mb-6 animate-[fadeIn_1s_ease-out]">
                 @id
                     Arsip Digital
-                @endid @en Digital Archive @enden
+                @endid
+                @en Digital Archive @enden
             </h2>
             <h1 class="text-5xl md:text-7xl font-serif text-riak-army leading-tight mb-8">
                 @id
@@ -25,39 +26,54 @@
         </div>
     </header>
 
-    <section class="max-w-7xl mx-auto px-6 pb-32">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-start">
+    <div class="max-w-7xl mx-auto px-6 pb-32">
+        @forelse($groupedMotifs as $badge => $motifs)
+            <section class="mb-32">
 
-            @forelse($motifs as $motif)
-                <div class="group {{ $loop->iteration % 2 == 0 ? 'md:mt-32' : '' }}">
-                    <div
-                        class="relative aspect-[4/5] rounded-3xl overflow-hidden bg-white mb-8 shadow-sm transition-all duration-700 group-hover:shadow-2xl">
-                        <img src="{{ asset('storage/' . $motif->image) }}" alt="{{ $motif->name }}"
-                            class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 {{ $motif->is_upcycled ? 'opacity-80 grayscale group-hover:grayscale-0' : '' }}">
+                @if ($badge)
+                    <div class="text-center mb-16">
+                        <span
+                            class="inline-block bg-riak-cream/90 backdrop-blur-md px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest text-riak-army shadow-sm border border-riak-honey/20">
+                            {{ $badge }}
+                        </span>
+                    </div>
+                @endif
 
-                        @if ($motif->badge)
-                            <div class="absolute top-8 left-8">
-                                <span
-                                    class="bg-riak-cream/90 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-riak-army">
-                                    {{ $motif->badge }}
-                                </span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-start">
+                    @foreach ($motifs as $motif)
+                        <div class="group {{ $loop->iteration % 2 == 0 ? 'md:mt-32' : '' }}">
+                            <div
+                                class="relative aspect-[4/5] rounded-3xl overflow-hidden bg-white mb-8 shadow-sm transition-all duration-700 group-hover:shadow-2xl">
+                                <img src="{{ asset('storage/' . $motif->image) }}" alt="{{ $motif->name }}"
+                                    class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 {{ $motif->is_upcycled ? 'opacity-80 grayscale group-hover:grayscale-0' : '' }}">
+
+                                @if ($motif->badge)
+                                    <div class="absolute top-8 left-8">
+                                        <span
+                                            class="bg-riak-cream/90 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-riak-army">
+                                            {{ $motif->badge }}
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
-                    </div>
 
-                    <div class="space-y-4 px-2">
-                        <h3
-                            class="text-3xl font-serif text-riak-army italic tracking-wide group-hover:text-riak-honey transition-colors">
-                            {{ $motif->name }}
-                        </h3>
-                        <div class="w-12 h-[1px] bg-riak-honey"></div>
-                        <p class="text-riak-khaki text-sm leading-[1.8] font-light max-w-md">
-                            {{ $motif->description }}
-                        </p>
-                    </div>
+                            <div class="space-y-4 px-2">
+                                <h3
+                                    class="text-3xl font-serif text-riak-army italic tracking-wide group-hover:text-riak-honey transition-colors">
+                                    {{ $motif->name }}
+                                </h3>
+                                <div class="w-12 h-[1px] bg-riak-honey"></div>
+                                <p class="text-riak-khaki text-sm leading-[1.8] font-light max-w-md">
+                                    {{ $motif->description }}
+                                </p>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
+            </section>
 
-            @empty
+        @empty
+            <section class="w-full">
                 <div
                     class="col-span-full py-32 flex flex-col items-center justify-center border-2 border-dashed border-riak-honey/20 rounded-[3rem] bg-riak-honey/5 text-center">
                     <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-8">
@@ -80,10 +96,9 @@
                         @en We are currently curating the golden heritage of Banjar @enden
                     </p>
                 </div>
-            @endforelse
-
-        </div>
-    </section>
+            </section>
+        @endforelse
+    </div>
 
     <section class="bg-riak-cream py-24 text-center border-t border-riak-honey/10">
         <h4 class="text-riak-honey text-[10px] font-black uppercase tracking-[0.4em] mb-8">
