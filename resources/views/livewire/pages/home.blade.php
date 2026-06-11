@@ -94,7 +94,7 @@
                     gold beads, creating a harmony between ancient traditions and modern lifestyles. @enden
                 </p>
 
-                <a href="https://www.instagram.com/riakairguci/"
+                <a href="https://www.instagram.com/riakairguci/" target="_blank"
                     class="inline-flex items-center gap-4 text-riak-persimmon text-[11px] font-bold uppercase tracking-widest group">
                     <span class="h-[1px] w-8 bg-riak-persimmon transition-all group-hover:w-12"></span>
                     @id
