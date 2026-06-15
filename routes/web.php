@@ -9,6 +9,7 @@ use App\Livewire\Pages\CulturalTripDetail;
 use App\Livewire\Pages\TheGallery;
 use App\Livewire\Pages\TheHeritage;
 use App\Livewire\Pages\TheMovement;
+use App\Livewire\UniqueCodeInput;
 
 // Route::view('/', 'welcome');
 
@@ -105,9 +106,12 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 // route untuk input unique code
-Route::view('input-unique-code', 'input-unique-code')
-    ->middleware(['auth', 'unmember'])
-    ->name('input-unique-code');
+// Route::get('/input-unique-code', )
+//     ->middleware(['auth', 'unmember'])
+//     ->name('input-unique-code');
+
+Route::get('/input-unique-code', UniqueCodeInput::class)->name('input-unique-code');
+
 
 require __DIR__ . '/auth.php';
 
