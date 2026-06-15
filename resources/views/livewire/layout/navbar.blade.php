@@ -23,7 +23,7 @@
             </a>
         </div>
 
-        <div class="hidden md:flex items-center gap-10">
+        <div class="hidden md:flex items-center gap-8">
             <div class="flex gap-8 text-[10px] uppercase tracking-[0.2em] font-bold transition-colors duration-500"
                 :class="atTop ? (isHome ? 'text-riak-cream' : 'text-riak-army/80') : 'text-riak-army/80'">
 
@@ -70,6 +70,26 @@
                     EN
                 </a>
             </div>
+
+            <div class="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold border-l pl-8 transition-colors duration-500"
+                :class="atTop ? (isHome ? 'border-riak-cream/20' : 'border-riak-army/10') : 'border-riak-army/10'">
+
+                <a href="{{ route('login') }}" wire:navigate class="transition-colors"
+                    :class="atTop ? (isHome ? 'text-riak-cream hover:text-riak-honey' :
+                        'text-riak-army/80 hover:text-riak-honey') : 'text-riak-army/80 hover:text-riak-honey'">
+                    Login
+                </a>
+
+                <a href="{{ route('register') }}" wire:navigate
+                    class="px-4 py-2 border transition-all duration-300 rounded-sm"
+                    :class="atTop ? (isHome ? 'border-riak-cream text-riak-cream hover:bg-riak-cream hover:text-riak-army' :
+                            'border-riak-army text-riak-army hover:bg-riak-army hover:text-riak-cream') :
+                        'border-riak-army text-riak-army hover:bg-riak-army hover:text-riak-cream'">
+                    @id
+                        Daftar
+                    @endid @en Register @enden
+                </a>
+            </div>
         </div>
 
         <button @click="mobileMenu = true" class="md:hidden transition-colors duration-500"
@@ -114,6 +134,19 @@
                 @id
                     Gerakan
                 @endid @en The Movement @enden
+            </a>
+        </div>
+
+        <div class="mt-12 flex flex-col items-center gap-4 w-64 pt-8 border-t border-riak-army/10">
+            <a href="{{ route('login') }}" wire:navigate @click="mobileMenu = false"
+                class="text-sm uppercase tracking-[0.2em] font-bold text-riak-army hover:text-riak-honey transition-colors">
+                Login
+            </a>
+            <a href="{{ route('register') }}" wire:navigate @click="mobileMenu = false"
+                class="w-full text-center py-3 text-sm uppercase tracking-[0.2em] font-bold border border-riak-army text-riak-army hover:bg-riak-army hover:text-riak-cream transition-all duration-300">
+                @id
+                    Daftar
+                @endid @en Register @enden
             </a>
         </div>
     </div>

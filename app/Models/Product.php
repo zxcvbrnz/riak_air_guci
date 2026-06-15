@@ -26,4 +26,10 @@ class Product extends Model
         $locale = App::getLocale();
         return $this->{"name_{$locale}"} ?? $this->name_id;
     }
+
+    // relasi ke unique_codes dengan one-to-many
+    public function uniqueCodes()
+    {
+        return $this->hasMany(UniqueCode::class);
+    }
 }

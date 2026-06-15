@@ -14,109 +14,100 @@ use App\Livewire\Pages\TheMovement;
 
 Route::redirect('/', '/id'); // Otomatis arahkan ke /id saat buka domain utama
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// route group untuk admin dengan prefix /admin dan middleware auth serta admin
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
+    // tambahkan route untuk halaman admin disini
+    Route::view('dashboard', 'dashboard')
+        ->name('dashboard.admin');
 
-Route::view('manage-trip', 'manage-trip')
-    ->middleware(['auth', 'verified'])
-    ->name('trip.index');
+    Route::view('manage-trip', 'manage-trip')
+        ->name('trip.index');
 
-Route::view('manage-trip/create', 'edit-trip')
-    ->middleware(['auth', 'verified'])
-    ->name('trip.create');
+    Route::view('manage-trip/create', 'edit-trip')
+        ->name('trip.create');
 
-Route::view('manage-trip/edit/{tripId}', 'edit-trip')
-    ->middleware(['auth', 'verified'])
-    ->name('trip.edit');
+    Route::view('manage-trip/edit/{tripId}', 'edit-trip')
+        ->name('trip.edit');
 
-Route::view('manage-video', 'manage-video')
-    ->middleware(['auth', 'verified'])
-    ->name('video.index');
+    Route::view('manage-video', 'manage-video')
+        ->name('video.index');
 
-Route::view('manage-video/create', 'form-video')
-    ->middleware(['auth', 'verified'])
-    ->name('video.create');
+    Route::view('manage-video/create', 'form-video')
+        ->name('video.create');
 
-Route::view('manage-video/edit/{videoId}', 'form-video')
-    ->middleware(['auth', 'verified'])
-    ->name('video.edit');
+    Route::view('manage-video/edit/{videoId}', 'form-video')
+        ->name('video.edit');
 
-Route::view('manage-motif', 'manage-motif')
-    ->middleware(['auth', 'verified'])
-    ->name('motif.index');
+    Route::view('manage-motif', 'manage-motif')
+        ->name('motif.index');
 
-Route::view('manage-motif/create', 'form-motif')
-    ->middleware(['auth', 'verified'])
-    ->name('motif.create');
+    Route::view('manage-motif/create', 'form-motif')
+        ->name('motif.create');
 
-Route::view('manage-motif/edit/{motifId}', 'form-motif')
-    ->middleware(['auth', 'verified'])
-    ->name('motif.edit');
+    Route::view('manage-motif/edit/{motifId}', 'form-motif')
+        ->name('motif.edit');
 
-Route::view('manage-product', 'manage-product')
-    ->middleware(['auth', 'verified'])
-    ->name('product.index');
+    Route::view('manage-product', 'manage-product')
+        ->name('product.index');
 
-Route::view('manage-product/create', 'form-product')
-    ->middleware(['auth', 'verified'])
-    ->name('product.create');
+    Route::view('manage-product/create', 'form-product')
+        ->name('product.create');
 
-Route::view('manage-product/edit/{productId}', 'form-product')
-    ->middleware(['auth', 'verified'])
-    ->name('product.edit');
+    Route::view('manage-product/edit/{productId}', 'form-product')
+        ->name('product.edit');
 
-Route::view('manage-creative-kits', 'manage-creative-kit')
-    ->middleware(['auth', 'verified'])
-    ->name('creative-kit.index');
+    Route::view('manage-creative-kits', 'manage-creative-kit')
+        ->name('creative-kit.index');
 
-Route::view('manage-creative-kits/create', 'form-creative-kit')
-    ->middleware(['auth', 'verified'])
-    ->name('creative-kit.create');
+    Route::view('manage-creative-kits/create', 'form-creative-kit')
+        ->name('creative-kit.create');
 
-Route::view('manage-creative-kits/edit/{creativeKitId}', 'form-creative-kit')
-    ->middleware(['auth', 'verified'])
-    ->name('creative-kit.edit');
+    Route::view('manage-creative-kits/edit/{creativeKitId}', 'form-creative-kit')
+        ->name('creative-kit.edit');
 
-Route::view('manage-movement', 'manage-movement-school')
-    ->middleware(['auth', 'verified'])
-    ->name('movement-school.index');
+    Route::view('manage-movement', 'manage-movement-school')
+        ->name('movement-school.index');
 
-Route::view('manage-movement/create', 'form-movement-school')
-    ->middleware(['auth', 'verified'])
-    ->name('movement-school.create');
+    Route::view('manage-movement/create', 'form-movement-school')
+        ->name('movement-school.create');
 
-Route::view('manage-movement/edit/{schoolId}}', 'form-movement-school')
-    ->middleware(['auth', 'verified'])
-    ->name('movement-school.edit');
+    Route::view('manage-movement/edit/{schoolId}}', 'form-movement-school')
+        ->name('movement-school.edit');
 
-Route::view('manage-artisan', 'manage-artisan')
-    ->middleware(['auth', 'verified'])
-    ->name('artisan.index');
+    Route::view('manage-artisan', 'manage-artisan')
+        ->name('artisan.index');
 
-Route::view('manage-artisan/create', 'form-artisan')
-    ->middleware(['auth', 'verified'])
-    ->name('artisan.create');
+    Route::view('manage-artisan/create', 'form-artisan')
+        ->name('artisan.create');
 
-Route::view('manage-artisan/edit/{artisanId}', 'form-artisan')
-    ->middleware(['auth', 'verified'])
-    ->name('artisan.edit');
+    Route::view('manage-artisan/edit/{artisanId}', 'form-artisan')
+        ->name('artisan.edit');
 
-Route::view('manage-schedule', 'manage-internal-schedule')
-    ->middleware(['auth', 'verified'])
-    ->name('internal-schedule.index');
+    Route::view('manage-schedule', 'manage-internal-schedule')
+        ->name('internal-schedule.index');
 
-Route::view('manage-schedule/create', 'form-internal-schedule')
-    ->middleware(['auth', 'verified'])
-    ->name('internal-schedule.create');
+    Route::view('manage-schedule/create', 'form-internal-schedule')
+        ->name('internal-schedule.create');
 
-Route::view('manage-schedule/edit/{scheduleId}', 'form-internal-schedule')
-    ->middleware(['auth', 'verified'])
-    ->name('internal-schedule.edit');
+    Route::view('manage-schedule/edit/{scheduleId}', 'form-internal-schedule')
+        ->name('internal-schedule.edit');
+});
+
+// route group untuk user dengan prefix /user dan middleware auth serta member
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'member', 'roleuser']], function () {
+    // tambahkan route untuk halaman user disini
+    Route::view('dashboard', 'dashboard')
+        ->name('dashboard.user');
+});
 
 Route::view('profile', 'profile')
-    ->middleware(['auth'])
+    ->middleware(['auth', 'admin|member'])
     ->name('profile');
+
+// route untuk input unique code
+Route::view('input-unique-code', 'input-unique-code')
+    ->middleware(['auth', 'unmember'])
+    ->name('input-unique-code');
 
 require __DIR__ . '/auth.php';
 
