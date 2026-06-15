@@ -33,10 +33,16 @@ new class extends Component {
         <div class="flex
         flex-col h-full">
             <div class="flex items-center justify-center h-20 border-b border-white/10">
-                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
+                <a href="#" wire:navigate class="flex items-center gap-3">
                     {{-- <x-application-logo class="h-10 w-auto fill-current text-[#DDA15E]" /> --}}
                     <img src="{{ asset('IMG_7179 (1).PNG') }}" alt="" class=" h-14 w-auto">
-                    <span class="font-serif italic text-xl tracking-wider text-[#FEFAE0]">Admin Panel</span>
+                    <span class="font-serif italic text-xl tracking-wider text-[#FEFAE0]">
+                        @if (auth()->user()->role === 'admin')
+                            Admin
+                        @else
+                            User
+                        @endif
+                    </span>
                 </a>
             </div>
 
