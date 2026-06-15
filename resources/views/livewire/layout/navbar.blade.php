@@ -116,7 +116,7 @@
                             <p class="text-[10px] text-gray-400 truncate">{{ auth()->user()->email }}</p>
                         </div>
 
-                        <a href="{{ route('dashboard') }}" wire:navigate
+                        <a href="{{ auth()->user()->role === 'admin' ? route('dashboard.admin') : route('dashboard.user') }}" wire:navigate
                             class="block px-4 py-2.5 text-xs text-riak-army hover:bg-riak-cream/30 hover:text-riak-honey transition-colors">
                             Dashboard
                         </a>
@@ -205,7 +205,7 @@
                     </div>
                 </div>
 
-                <a href="{{ route('dashboard') }}" wire:navigate @click="mobileMenu = false"
+                <a href="{{ auth()->user()->role === 'admin' ? route('dashboard.admin') : route('dashboard.user') }}" wire:navigate @click="mobileMenu = false"
                     class="w-full text-center py-3 text-sm uppercase tracking-[0.2em] font-bold bg-riak-honey text-white rounded-sm hover:bg-transparent border border-riak-honey hover:text-riak-army transition-all duration-300">
                     Dashboard
                 </a>
