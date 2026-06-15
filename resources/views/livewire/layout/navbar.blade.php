@@ -121,6 +121,13 @@
                             class="block px-4 py-2.5 text-xs text-riak-army hover:bg-riak-cream/30 hover:text-riak-honey transition-colors">
                             Dashboard
                         </a>
+
+                        <button wire:click="logouts"
+                            class="block w-full text-left px-4 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors">
+                            @id
+                                Keluar
+                            @endid @en Logout @enden
+                        </button>
                     </div>
                 @endauth
             </div>
@@ -201,6 +208,13 @@
                     class="w-full text-center py-3 text-sm uppercase tracking-[0.2em] font-bold bg-riak-honey text-white rounded-sm hover:bg-transparent border border-riak-honey hover:text-riak-army transition-all duration-300">
                     Dashboard
                 </a>
+
+                <button wire:click="logouts" @click="mobileMenu = false"
+                    class="w-full text-center py-2.5 text-xs uppercase tracking-[0.2em] font-bold text-red-500 hover:bg-red-50 transition-colors">
+                    @id
+                        Keluar
+                    @endid @en Logout @enden
+                </button>
             @endauth
         </div>
     </div>
