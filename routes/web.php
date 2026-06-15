@@ -110,9 +110,6 @@ Route::view('profile', 'profile')
 //     ->middleware(['auth', 'unmember'])
 //     ->name('input-unique-code');
 
-Route::get('/input-unique-code', UniqueCodeInput::class)->name('input-unique-code');
-
-
 require __DIR__ . '/auth.php';
 
 Route::group(['prefix' => '{locale}', 'middleware' => SetLocale::class], function () {
@@ -125,4 +122,6 @@ Route::group(['prefix' => '{locale}', 'middleware' => SetLocale::class], functio
     Route::get('/movement', TheMovement::class)->name('movement');
     Route::get('/movement/goes-to-school/{movementSchool:slug}', MovementDetail::class)->name('movement.show');
     Route::get('/movement/artisan/{artisan:slug}', ArtisanDetail::class)->name('artisan.show');
+
+    Route::get('/input-unique-code', UniqueCodeInput::class)->middleware(['auth', 'unmember'])->name('input-unique-code');
 });
