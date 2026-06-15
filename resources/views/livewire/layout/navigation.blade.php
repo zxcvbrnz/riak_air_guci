@@ -42,6 +42,7 @@ new class extends Component {
                         @else
                             User
                         @endif
+                        Panel
                     </span>
                 </a>
             </div>
