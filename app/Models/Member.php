@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Member extends Model
 {
     protected $fillable = [
-        'unique_code_id'
+        'user_id',
+        'unique_code_id',
     ];
 
     public function user()
