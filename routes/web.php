@@ -105,7 +105,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'member', 'roleuser']
 });
 
 Route::view('profile', 'profile')
-    ->middleware(['auth', 'role:admin,member'])
+    ->middleware(['auth', 'admin | member'])
     ->name('profile');
 
 // route untuk input unique code
