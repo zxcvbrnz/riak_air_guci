@@ -26,6 +26,7 @@ class UniqueCodeInput extends Component
 
         // 2. Buat member baru dengan unique code yang dipilih
         Member::create([
+            'user_id' => auth()->user()->id,
             'unique_code_id' => $uniqueCode->id
         ]);
 
