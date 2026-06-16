@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'unmember' => \App\Http\Middleware\UnMember::class,
             'admin' => \App\Http\Middleware\Admin::class,
             'roleuser' => \App\Http\Middleware\RoleUser::class,
+            'admin_or_member' => \App\Http\Middleware\AdminOrMember::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
