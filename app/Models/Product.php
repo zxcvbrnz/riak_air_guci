@@ -20,16 +20,24 @@ class Product extends Model
         'order'
     ];
 
-    // Accessor untuk Nama Otomatis (ID/EN)
     public function getNameAttribute()
     {
         $locale = App::getLocale();
         return $this->{"name_{$locale}"} ?? $this->name_id;
     }
 
-    // relasi ke unique_codes dengan one-to-many
     public function uniqueCodes()
     {
         return $this->hasMany(UniqueCode::class);
+    }
+
+    public function productSizes()
+    {
+        return $this->hasMany(ProductSize::class);
+    }
+
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
     }
 }

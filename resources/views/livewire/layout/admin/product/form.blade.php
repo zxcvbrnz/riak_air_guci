@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Product;
+use App\Models\ProductSize;
+use App\Models\ProductVariant;
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 
@@ -9,7 +11,7 @@ new class extends Component {
 
     public ?Product $product = null;
 
-    // Form Fields
+    // Form Fields Utama
     public $name_id,
         $name_en,
         $price,
@@ -19,10 +21,14 @@ new class extends Component {
         $link_shopee,
         $order = 0;
 
+    // Form Fields Relasi Dinamis (Array)
+    public $sizes = [];
+    public $variants = [];
+
     public function mount($productId = null)
     {
         if ($productId) {
-            $this->product = Product::findOrFail($productId);
+            $this->product = Product::with(['sizes', 'variants'])->findOrFail($productId);
             $this->name_id = $this->product->name_id;
             $this->name_en = $this->product->name_en;
             $this->price = $this->product->price;
@@ -30,20 +36,75 @@ new class extends Component {
             $this->link_shopee = $this->product->link_shopee;
             $this->order = $this->product->order;
             $this->oldImage = $this->product->image;
+
+            // Load data ukuran yang sudah ada
+            $this->sizes = $this->product->sizes
+                ->map(function ($size) {
+                    return ['id' => $size->id, 'size' => $size->size];
+                })
+                ->toArray();
+
+            // Load data varian yang sudah ada
+            $this->variants = $this->product->variants
+                ->map(function ($variant) {
+                    return ['id' => $variant->id, 'variant_name' => $variant->variant_name];
+                })
+                ->toArray();
         }
+
+        // Berikan minimal 1 baris input kosong jika data baru
+        if (empty($this->sizes)) {
+            $this->addSize();
+        }
+        if (empty($this->variants)) {
+            $this->addVariant();
+        }
+    }
+
+    // Fungsi Aksi untuk Ukuran (Sizes)
+    public function addSize()
+    {
+        $this->sizes[] = ['id' => null, 'size' => ''];
+    }
+
+    public function removeSize($index)
+    {
+        unset($this->sizes[$index]);
+        $this->sizes = array_values($this->sizes); // Reset index array
+    }
+
+    // Fungsi Aksi untuk Varian (Variants)
+    public function addVariant()
+    {
+        $this->variants[] = ['id' => null, 'variant_name' => ''];
+    }
+
+    public function removeVariant($index)
+    {
+        unset($this->variants[$index]);
+        $this->variants = array_values($this->variants); // Reset index array
     }
 
     public function save()
     {
-        $this->validate([
-            'name_id' => 'required|min:3',
-            'name_en' => 'required|min:3',
-            'price' => 'required|numeric',
-            'tag' => 'required',
-            'link_shopee' => 'required|url',
-            'image' => $this->product ? 'nullable|image|max:1024' : 'required|image|max:1024',
-            'order' => 'required|numeric',
-        ]);
+        $this->validate(
+            [
+                'name_id' => 'required|min:3',
+                'name_en' => 'required|min:3',
+                'price' => 'required|numeric',
+                'tag' => 'required',
+                'link_shopee' => 'required|url',
+                'image' => $this->product ? 'nullable|image|max:1024' : 'required|image|max:1024',
+                'order' => 'required|numeric',
+                // Validasi input dinamis
+                'sizes.*.size' => 'required|string|max:50',
+                'variants.*.variant_name' => 'required|string|max:100',
+            ],
+            [
+                'sizes.*.size.required' => 'Opsi ukuran wajib diisi atau hapus baris ini.',
+                'variants.*.variant_name.required' => 'Opsi varian wajib diisi atau hapus baris ini.',
+            ],
+        );
 
         $data = [
             'name_id' => $this->name_id,
@@ -58,9 +119,28 @@ new class extends Component {
             $data['image'] = $this->image->store('products', 'public');
         }
 
-        Product::updateOrCreate(['id' => $this->product->id ?? null], $data);
+        // 1. Simpan atau Update Produk Utama
+        $product = Product::updateOrCreate(['id' => $this->product->id ?? null], $data);
 
-        session()->flash('message', 'Produk berhasil disimpan.');
+        // 2. Sinkronisasi Data Ukuran (Product Sizes)
+        $keepSizeIds = [];
+        foreach ($this->sizes as $sizeData) {
+            $size = $product->sizes()->updateOrCreate(['id' => $sizeData['id']], ['size' => $sizeData['size']]);
+            $keepSizeIds[] = $size->id;
+        }
+        // Hapus ukuran lama yang dibuang admin dari list form
+        $product->sizes()->whereNotIn('id', $keepSizeIds)->delete();
+
+        // 3. Sinkronisasi Data Varian (Product Variants)
+        $keepVariantIds = [];
+        foreach ($this->variants as $variantData) {
+            $variant = $product->variants()->updateOrCreate(['id' => $variantData['id']], ['variant_name' => $variantData['variant_name']]);
+            $keepVariantIds[] = $variant->id;
+        }
+        // Hapus varian lama yang dibuang admin dari list form
+        $product->variants()->whereNotIn('id', $keepVariantIds)->delete();
+
+        session()->flash('message', 'Produk beserta ukuran dan varian berhasil disimpan.');
         return $this->redirect(route('product.index'), navigate: true);
     }
 }; ?>
@@ -139,6 +219,73 @@ new class extends Component {
                 @enderror
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-riak-honey/10">
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Opsi Ukuran
+                            (Sizes)</label>
+                        <button type="button" wire:click="addSize"
+                            class="px-3 py-1 bg-riak-cream text-riak-army border border-riak-honey/10 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-riak-honey hover:text-riak-cream transition-all">
+                            + Tambah Size
+                        </button>
+                    </div>
+
+                    <div class="space-y-2">
+                        @foreach ($sizes as $index => $sizeItem)
+                            <div class="flex items-center gap-2" wire:key="size-{{ $index }}">
+                                <input type="text" wire:model="sizes.{{ $index }}.size"
+                                    placeholder="Contoh: S, M, L, XL, All Size"
+                                    class="w-full rounded-xl border-riak-honey/20 text-xs font-medium focus:ring-riak-army @error('sizes.' . $index . '.size') border-red-400 @enderror">
+
+                                <button type="button" wire:click="removeSize({{ $index }})"
+                                    class="p-2 text-red-400 hover:text-red-600 transition-colors" title="Hapus">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                            @error('sizes.' . $index . '.size')
+                                <p class="text-red-500 text-[9px] italic">{{ $message }}</p>
+                            @enderror
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Opsi Varian
+                            (Variants)</label>
+                        <button type="button" wire:click="addVariant"
+                            class="px-3 py-1 bg-riak-cream text-riak-army border border-riak-honey/10 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-riak-honey hover:text-riak-cream transition-all">
+                            + Tambah Varian
+                        </button>
+                    </div>
+
+                    <div class="space-y-2">
+                        @foreach ($variants as $index => $variantItem)
+                            <div class="flex items-center gap-2" wire:key="variant-{{ $index }}">
+                                <input type="text" wire:model="variants.{{ $index }}.variant_name"
+                                    placeholder="Contoh: Black, Olive, Stripes"
+                                    class="w-full rounded-xl border-riak-honey/20 text-xs font-medium focus:ring-riak-army @error('variants.' . $index . '.variant_name') border-red-400 @enderror">
+
+                                <button type="button" wire:click="removeVariant({{ $index }})"
+                                    class="p-2 text-red-400 hover:text-red-600 transition-colors" title="Hapus">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                            @error('variants.' . $index . '.variant_name')
+                                <p class="text-red-500 text-[9px] italic">{{ $message }}</p>
+                            @enderror
+                        @endforeach
+                    </div>
+                </div>
+
+            </div>
             <div class="pt-4 border-t border-riak-honey/10">
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey mb-4">Foto
                     Produk</label>
@@ -154,7 +301,7 @@ new class extends Component {
                                 <div
                                     class="w-full h-full bg-riak-cream/30 flex items-center justify-center text-riak-khaki">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
@@ -175,10 +322,10 @@ new class extends Component {
                     </div>
 
                     <div class="flex-grow">
-                        <input type="file" wire:model="image" id="upload-{{ $iteration ?? 1 }}"
+                        <input type="file" wire:model="image" id="upload-1"
                             class="text-xs text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 transition-all cursor-pointer">
-                        <p class="mt-2 text-[10px] text-riak-khaki italic text-opacity-60">Format: JPG, PNG, WEBP (Maks.
-                            1MB)</p>
+                        <p class="mt-2 text-[10px] text-riak-khaki italic text-opacity-60">Format: JPG, PNG, WEBP
+                            (Maks. 1MB)</p>
                         @error('image')
                             <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
                         @enderror
@@ -193,9 +340,7 @@ new class extends Component {
 
             <button type="submit" wire:loading.attr="disabled" wire:target="save, image"
                 class="relative px-12 py-4 bg-riak-army text-riak-cream rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-xl hover:bg-riak-honey transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group">
-
                 <span wire:loading.remove wire:target="save">Simpan Produk</span>
-
                 <span wire:loading wire:target="save" class="flex items-center gap-2">
                     <svg class="animate-spin h-3 w-3 text-white" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
