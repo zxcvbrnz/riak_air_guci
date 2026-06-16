@@ -45,7 +45,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-motif/create', 'form-motif')
         ->name('motif.create');
 
-    Route::view('manage-motif/edit/{motifId}', 'form-motif')
+    Route::view('manage-motif/{motifId}/edit', 'form-motif')
         ->name('motif.edit');
 
     Route::view('manage-product', 'manage-product')
@@ -54,8 +54,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-product/create', 'form-product')
         ->name('product.create');
 
-    Route::view('manage-product/edit/{productId}', 'form-product')
+    Route::view('manage-product/{productId}/edit', 'form-product')
         ->name('product.edit');
+
+    Route::view('manage-product/{productId}/unique-code', 'manage-unique-code')
+        ->name('product.unique-code');
 
     Route::view('manage-creative-kits', 'manage-creative-kit')
         ->name('creative-kit.index');
@@ -63,7 +66,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-creative-kits/create', 'form-creative-kit')
         ->name('creative-kit.create');
 
-    Route::view('manage-creative-kits/edit/{creativeKitId}', 'form-creative-kit')
+    Route::view('manage-creative-kits/{creativeKitId}/edit', 'form-creative-kit')
         ->name('creative-kit.edit');
 
     Route::view('manage-movement', 'manage-movement-school')
@@ -72,7 +75,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-movement/create', 'form-movement-school')
         ->name('movement-school.create');
 
-    Route::view('manage-movement/edit/{schoolId}}', 'form-movement-school')
+    Route::view('manage-movement/{schoolId}/edit', 'form-movement-school')
         ->name('movement-school.edit');
 
     Route::view('manage-artisan', 'manage-artisan')
@@ -81,7 +84,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-artisan/create', 'form-artisan')
         ->name('artisan.create');
 
-    Route::view('manage-artisan/edit/{artisanId}', 'form-artisan')
+    Route::view('manage-artisan/{artisanId}/edit', 'form-artisan')
         ->name('artisan.edit');
 
     Route::view('manage-schedule', 'manage-internal-schedule')
@@ -90,7 +93,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-schedule/create', 'form-internal-schedule')
         ->name('internal-schedule.create');
 
-    Route::view('manage-schedule/edit/{scheduleId}', 'form-internal-schedule')
+    Route::view('manage-schedule/{scheduleId}/edit', 'form-internal-schedule')
         ->name('internal-schedule.edit');
 });
 

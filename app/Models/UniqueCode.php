@@ -8,7 +8,8 @@ class UniqueCode extends Model
 {
     protected $fillable = [
         'product_id',
-        'code'
+        'code',
+        'is_used',
     ];
 
     // relasi ke product dengan many-to-one

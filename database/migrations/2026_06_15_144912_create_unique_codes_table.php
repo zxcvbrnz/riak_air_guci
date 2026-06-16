@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('code')->unique();
+            $table->boolean('is_used')->default(false);
             $table->timestamps();
         });
     }
