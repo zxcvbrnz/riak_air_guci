@@ -31,12 +31,12 @@ class Product extends Model
         return $this->hasMany(UniqueCode::class);
     }
 
-    public function productSizes()
+    public function sizes()
     {
         return $this->hasMany(ProductSize::class);
     }
 
-    public function productVariants()
+    public function variants()
     {
         return $this->hasMany(ProductVariant::class);
     }
