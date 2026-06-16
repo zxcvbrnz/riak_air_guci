@@ -37,7 +37,7 @@ class UniqueCodeInput extends Component
         session()->flash('message', 'Kode berhasil diverifikasi.');
 
         // 4. Redirect ke dashboard
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard.user');
     }
 
     public function render()

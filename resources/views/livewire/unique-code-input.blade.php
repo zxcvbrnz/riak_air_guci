@@ -20,10 +20,10 @@
                     Unique Code
                 </label>
 
-                <input wire:model="unique_code" id="unique_code" type="text" placeholder="e.g. RIAK-XXXX-XXXX"
+                <input wire:model="code" id="unique_code" type="text" placeholder="e.g. RIAK-XXXX-XXXX"
                     class="w-full bg-riak-cream/10 border border-riak-army/20 rounded-sm py-3 px-4 text-riak-army font-mono placeholder-riak-army/30 transition-all duration-300 focus:outline-none focus:border-riak-honey focus:ring-1 focus:ring-riak-honey">
 
-                @error('unique_code')
+                @error('code')
                     <span class="flex items-center text-red-500 text-xs font-medium tracking-wide mt-1.5">
                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
