@@ -10,7 +10,7 @@
             @if (request()->routeIs('artisan.edit'))
                 @livewire('layout.admin.artisan.form', ['artisanId' => $artisanId])
             @else
-                @livewire('layout.admin.artisan.form')
+                @livewire('layout.admin.artis.form')
             @endif
         </div>
     </div>
