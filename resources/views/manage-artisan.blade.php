@@ -10,5 +10,4 @@
             @livewire('layout.admin.artisan.index')
         </div>
     </div>
-
 </x-app-layout>
