@@ -78,13 +78,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-movement/{schoolId}/edit', 'form-movement-school')
         ->name('movement-school.edit');
 
-    Route::view('manage-artisan', 'manage-artisan')
+    Route::view('manage-maestro', 'manage-artisan')
         ->name('artisan.index');
 
-    Route::view('manage-artisan/create', 'form-artisan')
+    Route::view('manage-maestro/create', 'form-artisan')
         ->name('artisan.create');
 
-    Route::view('manage-artisan/{artisanId}/edit', 'form-artisan')
+    Route::view('manage-maestro/{artisanId}/edit', 'form-artisan')
         ->name('artisan.edit');
 
     Route::view('manage-schedule', 'manage-internal-schedule')
