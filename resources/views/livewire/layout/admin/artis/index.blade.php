@@ -27,7 +27,7 @@ new class extends Component {
 }; ?>
 
 <div class="max-w-7xl mx-auto pb-20 px-6">
-    <x-slot name="header">Kelola Artisan</x-slot>
+    <x-slot name="header">Kelola Maestro</x-slot>
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-riak-honey/10 pb-10">
         <div>
             <h2 class="font-serif italic text-5xl text-riak-army">The Maestro</h2>
