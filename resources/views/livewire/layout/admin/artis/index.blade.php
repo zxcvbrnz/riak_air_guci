@@ -30,14 +30,14 @@ new class extends Component {
     <x-slot name="header">Kelola Artisan</x-slot>
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-riak-honey/10 pb-10">
         <div>
-            <h2 class="font-serif italic text-5xl text-riak-army">The Artisans</h2>
+            <h2 class="font-serif italic text-5xl text-riak-army">The Maestro</h2>
             <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-riak-honey mt-3">Manajemen Profil Pengrajin &
                 Tokoh</p>
         </div>
 
         <a href="{{ route('artisan.create') }}" wire:navigate
             class="px-10 py-4 bg-riak-army text-riak-cream rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl hover:bg-riak-honey transition-all transform hover:-translate-y-1">
-            + Tambah Pengrajin
+            + Tambah Maestro
         </a>
     </div>
 
