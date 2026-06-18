@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @livewire('layout.admin.artisan.index')
+            @livewire('layout.admin.motif.index')
         </div>
     </div>
 </x-app-layout>
