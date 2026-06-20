@@ -17,7 +17,8 @@ class Product extends Model
         'tag',
         'image',
         'link_shopee',
-        'order'
+        'order',
+        'total_sold',
     ];
 
     public function getNameAttribute()
