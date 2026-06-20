@@ -10,7 +10,7 @@ new class extends Component {
     public string $name = '';
     public string $email = '';
 
-    // --- PROPERTI BARU ---
+    // --- PROPERTI PROFILE ---
     public string $asal_provinsi = '';
     public string $asal_kota = '';
     public string $tempat_lahir = '';
@@ -45,7 +45,6 @@ new class extends Component {
         $user = Auth::user();
 
         // --- VALIDASI ADAPTIF BERDASARKAN ROLE ---
-        // Input dasar yang selalu divalidasi untuk semua role (termasuk admin)
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
@@ -98,18 +97,18 @@ new class extends Component {
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+            Informasi Profil
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+            Perbarui informasi profil akun dan alamat email Anda.
         </p>
     </header>
 
     <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
         {{-- Nama --}}
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" value="Nama Lengkap" />
             <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required
                 autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
@@ -117,7 +116,7 @@ new class extends Component {
 
         {{-- Email --}}
         <div>
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" value="Alamat Email" />
             <x-text-input wire:model="email" id="email" name="email" type="email" class="mt-1 block w-full"
                 required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
@@ -125,17 +124,17 @@ new class extends Component {
             @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
+                        Alamat email Anda belum terverifikasi.
 
                         <button wire:click.prevent="sendVerification"
                             class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
+                            Klik di sini untuk mengirim ulang email verifikasi.
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
+                            Tautan verifikasi baru telah dikirim ke alamat email Anda.
                         </p>
                     @endif
                 </div>
@@ -146,15 +145,15 @@ new class extends Component {
         @if (auth()->user()->role !== 'admin')
             {{-- No WhatsApp --}}
             <div>
-                <x-input-label for="no_wa" :value="__('No. WhatsApp')" />
+                <x-input-label for="no_wa" value="No. WhatsApp" />
                 <x-text-input wire:model="no_wa" id="no_wa" name="no_wa" type="text" class="mt-1 block w-full"
-                    required />
+                    required placeholder="Contoh: 08123456789" />
                 <x-input-error class="mt-2" :messages="$errors->get('no_wa')" />
             </div>
 
             {{-- Gender --}}
             <div>
-                <x-input-label for="gender" :value="__('Jenis Kelamin')" />
+                <x-input-label for="gender" value="Jenis Kelamin" />
                 <select wire:model="gender" id="gender" name="gender"
                     class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                     required>
@@ -168,14 +167,14 @@ new class extends Component {
             {{-- Grid: Tempat & Tanggal Lahir --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <x-input-label for="tempat_lahir" :value="__('Tempat Lahir')" />
+                    <x-input-label for="tempat_lahir" value="Tempat Lahir" />
                     <x-text-input wire:model="tempat_lahir" id="tempat_lahir" name="tempat_lahir" type="text"
                         class="mt-1 block w-full" required />
                     <x-input-error class="mt-2" :messages="$errors->get('tempat_lahir')" />
                 </div>
 
                 <div>
-                    <x-input-label for="tanggal_lahir" :value="__('Tanggal Lahir')" />
+                    <x-input-label for="tanggal_lahir" value="Tanggal Lahir" />
                     <x-text-input wire:model="tanggal_lahir" id="tanggal_lahir" name="tanggal_lahir" type="date"
                         class="mt-1 block w-full" required />
                     <x-input-error class="mt-2" :messages="$errors->get('tanggal_lahir')" />
@@ -185,14 +184,14 @@ new class extends Component {
             {{-- Grid: Provinsi & Kota --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <x-input-label for="asal_provinsi" :value="__('Provinsi Asal')" />
+                    <x-input-label for="asal_provinsi" value="Provinsi Asal" />
                     <x-text-input wire:model="asal_provinsi" id="asal_provinsi" name="asal_provinsi" type="text"
                         class="mt-1 block w-full" required />
                     <x-input-error class="mt-2" :messages="$errors->get('asal_provinsi')" />
                 </div>
 
                 <div>
-                    <x-input-label for="asal_kota" :value="__('Kota/Kabupaten Asal')" />
+                    <x-input-label for="asal_kota" value="Kota/Kabupaten Asal" />
                     <x-text-input wire:model="asal_kota" id="asal_kota" name="asal_kota" type="text"
                         class="mt-1 block w-full" required />
                     <x-input-error class="mt-2" :messages="$errors->get('asal_kota')" />
@@ -202,10 +201,10 @@ new class extends Component {
 
         {{-- Tombol Simpan --}}
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button>Simpan Perubahan</x-primary-button>
 
             <x-action-message class="me-3" on="profile-updated">
-                {{ __('Saved.') }}
+                Berhasil disimpan.
             </x-action-message>
         </div>
     </form>

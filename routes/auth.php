@@ -2,14 +2,18 @@
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\SetLocale;
 use Livewire\Volt\Volt;
 
 Route::middleware('guest')->group(function () {
-    Volt::route('register', 'pages.auth.register')
-        ->name('register');
+    Route::group(['prefix' => '{locale}', 'middleware' => SetLocale::class], function () {
+        Volt::route('register', 'pages.auth.register')
+            ->name('register');
 
-    Volt::route('login', 'pages.auth.login')
-        ->name('login');
+        Volt::route('login', 'pages.auth.login')
+            ->name('login');
+    });
+
 
     Volt::route('forgot-password', 'pages.auth.forgot-password')
         ->name('password.request');
