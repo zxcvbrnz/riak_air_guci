@@ -17,7 +17,9 @@ new class extends Component {
         $duration,
         $thumb,
         $oldThumb,
-        $video_url,
+        $video_file, // Properti baru untuk upload file video langsung
+        $oldVideoFile, // Menyimpan path file video lama saat edit
+        $video_url, // Tetap dipertahankan jika Anda ingin opsi fallback / hybrid
         $is_featured = false;
 
     public function mount($videoId = null)
@@ -32,9 +34,10 @@ new class extends Component {
             $this->video_url = $this->video->video_url;
             $this->is_featured = $this->video->is_featured;
             $this->oldThumb = $this->video->thumb;
+            $this->oldVideoFile = $this->video->video_file ?? null; // Load path video lama jika ada
 
-            // Biarkan $this->thumb tetap null agar tidak bentrok dengan string path
             $this->thumb = null;
+            $this->video_file = null;
         }
     }
 
@@ -47,7 +50,9 @@ new class extends Component {
             'category_en' => 'required',
             'duration' => 'required',
             'thumb' => $this->video ? 'nullable|image|max:1024' : 'required|image|max:1024',
-            'video_url' => 'required|url',
+            // Aturan validasi file video (Maksimal 20MB - sesuaikan php.ini jika butuh lebih besar)
+            'video_file' => $this->video ? 'nullable|mimes:mp4,mov,avi,mkv,webm|max:20480' : 'required|mimes:mp4,mov,avi,mkv,webm|max:20480',
+            'video_url' => 'nullable|url',
         ]);
 
         $data = [
@@ -60,14 +65,19 @@ new class extends Component {
             'is_featured' => $this->is_featured,
         ];
 
-        // Hanya simpan jika ada file baru yang diunggah
+        // Menyimpan file thumbnail baru jika diunggah
         if ($this->thumb instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-            $data['thumb'] = $this->thumb->store('videos', 'public');
+            $data['thumb'] = $this->thumb->store('videos/thumbs', 'public');
+        }
+
+        // Menyimpan berkas video baru jika diunggah langsung
+        if ($this->video_file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $data['video_file'] = $this->video_file->store('videos/files', 'public');
         }
 
         Video::updateOrCreate(['id' => $this->video->id ?? null], $data);
 
-        session()->flash('message', 'Data video berhasil disimpan.');
+        session()->flash('message', 'Data video beserta berkas berhasil disimpan.');
         return $this->redirect(route('video.index'), navigate: true);
     }
 }; ?>
@@ -131,11 +141,62 @@ new class extends Component {
 
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold uppercase tracking-widest text-[#BC6C25]">URL Video
-                        (YouTube/Vimeo)</label>
-                    <input type="url" wire:model="video_url"
+                        Fallback (Opsional)</label>
+                    <input type="url" wire:model="video_url" placeholder="https://youtube.com/..."
                         class="w-full rounded-xl border-[#DDA15E]/20 focus:ring-[#BC6C25] @error('video_url') border-red-400 @enderror">
                     @error('video_url')
                         <p class="text-red-500 text-[9px] italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            {{-- Kolom Upload Berkas Video Langsung --}}
+            <div class="pt-4 border-t border-[#DDA15E]/10">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-[#BC6C25] mb-4">Berkas Video
+                    (Upload Langsung)</label>
+
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-6">
+                        <div class="relative group">
+                            @if ($video_file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                <video src="{{ $video_file->temporaryUrl() }}" controls
+                                    class="w-40 h-24 object-cover rounded-2xl shadow-md border-2 border-[#BC6C25]"></video>
+                            @elseif($oldVideoFile)
+                                <video src="{{ asset('storage/' . $oldVideoFile) }}" controls
+                                    class="w-40 h-24 object-cover rounded-2xl border border-[#DDA15E]/20"></video>
+                            @else
+                                <div
+                                    class="w-40 h-24 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            @endif
+
+                            <div wire:loading wire:target="video_file"
+                                class="absolute inset-0 bg-white/70 backdrop-blur-[2px] rounded-2xl flex flex-col items-center justify-center gap-1">
+                                <svg class="animate-spin h-5 w-5 text-[#BC6C25]" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                <span class="text-[8px] font-bold text-[#BC6C25] uppercase tracking-tighter">Uploading
+                                    Video</span>
+                            </div>
+                        </div>
+
+                        <div class="flex-grow">
+                            <input type="file" wire:model="video_file" accept="video/*"
+                                class="text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#FEFAE0] file:text-[#283618] hover:file:bg-[#DDA15E]/20 cursor-pointer">
+                            <p class="mt-2 text-[9px] text-gray-400 italic">Format: MP4, MOV, WEBM (Maks. 20MB)</p>
+                        </div>
+                    </div>
+                    @error('video_file')
+                        <p class="text-red-500 text-[9px] font-bold italic tracking-wide">* {{ $message }}</p>
                     @enderror
                 </div>
             </div>
@@ -157,7 +218,7 @@ new class extends Component {
                                 <div
                                     class="w-40 h-24 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
@@ -173,8 +234,8 @@ new class extends Component {
                                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                     </path>
                                 </svg>
-                                <span
-                                    class="text-[8px] font-bold text-[#BC6C25] uppercase tracking-tighter">Uploading</span>
+                                <span class="text-[8px] font-bold text-[#BC6C25] uppercase tracking-tighter">Uploading
+                                    Thumb</span>
                             </div>
                         </div>
 
@@ -193,15 +254,15 @@ new class extends Component {
             <div class="flex items-center gap-3 pt-4">
                 <input type="checkbox" wire:model="is_featured"
                     class="rounded border-[#DDA15E]/40 text-[#BC6C25] focus:ring-[#BC6C25]">
-                <label class="text-[10px] font-bold uppercase tracking-widest text-[#283618]">Tampilkan di halaman utama
-                    (Featured)</label>
+                <label class="text-[10px] font-bold uppercase tracking-widest text-[#283618]">Tampilkan di halaman
+                    utama (Featured)</label>
             </div>
         </div>
 
         <div class="flex justify-end gap-6 items-center">
             <a href="{{ route('video.index') }}" wire:navigate
                 class="text-xs font-bold uppercase text-gray-400 hover:text-[#283618]">Batal</a>
-            <button type="submit" wire:loading.attr="disabled"
+            <button type="submit" wire:loading.attr="disabled" wire:target="save, video_file, thumb"
                 class="px-12 py-4 bg-[#BC6C25] text-white rounded-2xl text-xs font-bold uppercase tracking-widest shadow-xl shadow-[#BC6C25]/20 hover:bg-[#283618] transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
                 <span wire:loading.remove wire:target="save">Simpan Video</span>
                 <span wire:loading wire:target="save">Memproses...</span>
