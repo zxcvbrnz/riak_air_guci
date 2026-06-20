@@ -21,6 +21,7 @@ new class extends Component {
     public function with()
     {
         return [
+            // Mengambil data produk beserta kolom total_sold
             'products' => Product::orderBy('order', 'asc')->paginate(10),
         ];
     }
@@ -56,6 +57,7 @@ new class extends Component {
                     </th>
                     <th class="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-riak-honey">Price</th>
                     <th class="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-riak-honey">Tag</th>
+                    <th class="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-riak-honey">Sold</th>
                     <th class="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-riak-honey">Order</th>
                     <th class="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-riak-honey text-right">
                         Actions</th>
@@ -64,29 +66,48 @@ new class extends Component {
             <tbody class="divide-y divide-riak-honey/5">
                 @forelse ($products as $product)
                     <tr class="group hover:bg-riak-cream/10 transition-colors">
+                        {{-- Preview Gambar --}}
                         <td class="px-6 py-4">
                             <div class="w-16 h-16 rounded-2xl overflow-hidden border border-riak-honey/10">
                                 <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-full object-cover">
                             </div>
                         </td>
+
+                        {{-- Nama Produk --}}
                         <td class="px-6 py-4">
                             <div class="font-serif italic text-lg text-riak-army">{{ $product->name_id }}</div>
                             <div class="text-[10px] text-riak-khaki uppercase tracking-tighter">{{ $product->name_en }}
                             </div>
                         </td>
+
+                        {{-- Harga --}}
                         <td class="px-6 py-4">
-                            <span class="text-sm font-bold text-riak-army">Rp
-                                {{ number_format($product->price, 0, ',', '.') }}</span>
+                            <span class="text-sm font-bold text-riak-army">
+                                Rp {{ number_format($product->price, 0, ',', '.') }}
+                            </span>
                         </td>
+
+                        {{-- Tag --}}
                         <td class="px-6 py-4">
                             <span
                                 class="px-3 py-1 rounded-full bg-riak-cream text-riak-army text-[9px] font-bold uppercase tracking-widest border border-riak-honey/20">
                                 {{ $product->tag }}
                             </span>
                         </td>
+
+                        {{-- Total Terjual (Kolom Baru) --}}
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-semibold text-riak-army">
+                                {{ number_format($product->total_sold ?? 0, 0, ',', '.') }}
+                            </span>
+                        </td>
+
+                        {{-- Order urutan --}}
                         <td class="px-6 py-4 text-sm text-riak-khaki">
                             {{ $product->order }}
                         </td>
+
+                        {{-- Tombol Aksi --}}
                         <td class="px-6 py-4">
                             <div class="flex justify-end gap-3">
                                 <a href="{{ route('product.unique-code', $product->id) }}" wire:navigate
@@ -106,6 +127,7 @@ new class extends Component {
                                             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                     </svg>
                                 </a>
+
                                 <a href="{{ route('product.edit', $product->id) }}" wire:navigate
                                     class="p-2 text-riak-army hover:text-riak-honey transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,6 +135,7 @@ new class extends Component {
                                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2.5 2.5 0 113.536 3.536L12 14.036H3v-3.572L16.732 3.732z" />
                                     </svg>
                                 </a>
+
                                 <button wire:click="delete({{ $product->id }})" wire:confirm="Hapus produk ini?"
                                     class="p-2 text-red-400 hover:text-red-600 transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,7 +148,8 @@ new class extends Component {
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-20 text-center font-serif italic text-riak-khaki">
+                        {{-- Colspan diubah ke 7 karena jumlah kolom bertambah --}}
+                        <td colspan="7" class="px-6 py-20 text-center font-serif italic text-riak-khaki">
                             Belum ada data produk.
                         </td>
                     </tr>

@@ -19,6 +19,7 @@ new class extends Component {
         $image,
         $oldImage,
         $link_shopee,
+        $total_sold = 0, // Properti baru untuk jumlah terjual
         $order = 0;
 
     // Form Fields Relasi Dinamis (Array)
@@ -34,6 +35,7 @@ new class extends Component {
             $this->price = $this->product->price;
             $this->tag = $this->product->tag;
             $this->link_shopee = $this->product->link_shopee;
+            $this->total_sold = $this->product->total_sold ?? 0; // Load nilai total_sold jika edit
             $this->order = $this->product->order;
             $this->oldImage = $this->product->image;
 
@@ -95,6 +97,7 @@ new class extends Component {
                 'tag' => 'required',
                 'link_shopee' => 'required|url',
                 'image' => $this->product ? 'nullable|image|max:1024' : 'required|image|max:1024',
+                'total_sold' => 'required|numeric|min:0', // Validasi input total_sold
                 'order' => 'required|numeric',
                 // Validasi input dinamis
                 'sizes.*.size' => 'required|string|max:50',
@@ -112,6 +115,7 @@ new class extends Component {
             'price' => $this->price,
             'tag' => $this->tag,
             'link_shopee' => $this->link_shopee,
+            'total_sold' => $this->total_sold, // Mapping data untuk disimpan ke DB
             'order' => $this->order,
         ];
 
@@ -175,7 +179,8 @@ new class extends Component {
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {{-- Grid Harga, Tag, Terjual, & Urutan --}}
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Harga
                         (Rp)</label>
@@ -196,6 +201,17 @@ new class extends Component {
                         <option value="Limited">Limited</option>
                     </select>
                     @error('tag')
+                        <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Input Field Baru: Total Terjual --}}
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Total
+                        Terjual</label>
+                    <input type="number" wire:model="total_sold" min="0"
+                        class="w-full rounded-xl border-riak-honey/20 focus:ring-riak-army @error('total_sold') border-red-400 @enderror">
+                    @error('total_sold')
                         <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
                     @enderror
                 </div>

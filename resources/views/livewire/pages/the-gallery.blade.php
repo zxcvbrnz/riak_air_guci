@@ -31,7 +31,7 @@
 
         <div class="flex overflow-x-auto pb-8 gap-6 snap-x no-scrollbar">
             @forelse ($products as $product)
-                <div class="group flex-none w-[280px] md:w-1/4 snap-start">
+                <div class="group flex-none w-[280px] md:w-1/4 snap-start flex flex-col">
                     <div class="relative aspect-[3/4] bg-riak-cream rounded-2xl overflow-hidden mb-5 shadow-sm">
                         <div
                             class="absolute top-4 left-4 z-10 bg-riak-persimmon text-white text-[8px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
@@ -39,14 +39,36 @@
                         </div>
                         <img src="{{ asset('storage/' . $product->image) }}"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="{{ $product->name }}">
+                            alt="{{ $product->name_id }}">
                     </div>
-                    <h3 class="text-[12px] font-bold uppercase tracking-widest text-riak-army mb-1">{{ $product->name }}
+
+                    {{-- Menggunakan name_id sesuai struktur form/index sebelumnya --}}
+                    <h3 class="text-[12px] font-bold uppercase tracking-widest text-riak-army mb-1">
+                        @id
+                            {{ $product->name_id }}
+                        @endid @en {{ $product->name_en }} @enden
                     </h3>
-                    <p class="text-sm text-riak-honey font-serif italic mb-4">IDR
-                        {{ number_format($product->price, 0, ',', '.') }}</p>
+
+                    {{-- Baris Harga & Total Terjual (Sejajar secara estetis) --}}
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-sm text-riak-honey font-serif italic">
+                            IDR {{ number_format($product->price, 0, ',', '.') }}
+                        </p>
+
+                        {{-- Hanya tampil jika total_sold di atas 0 --}}
+                        @if ($product->total_sold > 0)
+                            <span
+                                class="text-[9px] font-bold uppercase tracking-widest text-riak-khaki/80 bg-riak-cream/40 px-2 py-0.5 rounded-md">
+                                @id
+                                    Terjual {{ number_format($product->total_sold, 0, ',', '.') }}
+                                @endid
+                                @en {{ number_format($product->total_sold, 0, ',', '.') }} Sold @enden
+                            </span>
+                        @endif
+                    </div>
+
                     <a href="{{ $product->link_shopee }}" target="_blank"
-                        class="w-full bg-riak-army text-riak-cream py-4 text-center rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all hover:bg-riak-honey">
+                        class="w-full block bg-riak-army text-riak-cream py-4 text-center rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all hover:bg-riak-honey mt-auto">
                         @id
                             Beli Sekarang
                         @endid @en Buy Now @enden
