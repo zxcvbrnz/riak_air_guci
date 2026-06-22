@@ -376,78 +376,123 @@ new class extends Component {
         </div>
 
         {{-- SECTION 2: INPUT BERKAS MEMBER DASHBOARD RESOURCE --}}
-        <div class="bg-white p-8 rounded-[2.5rem] border border-riak-honey/10 shadow-sm space-y-6">
+        <div class="bg-white p-10 rounded-[3rem] border border-riak-honey/10 shadow-sm space-y-10">
             <div class="border-b border-riak-honey/10 pb-2">
                 <h3 class="font-serif italic text-lg text-riak-army">Konten Dashboard Eksklusif</h3>
                 <p class="text-[10px] text-riak-khaki mt-0.5">Unggah berkas pembelajaran untuk dashboard member yang
                     mengklaim kode produk ini.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {{-- Input File Video Tutorial --}}
-                <div class="space-y-2 relative">
+            <div class="grid grid-cols-1 gap-10">
+                {{-- Input File Video Tutorial / Workshop --}}
+                <div class="space-y-4">
                     <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">File Video
                         Panduan / Workshop</label>
+                    <div class="flex items-start gap-8">
+                        <div
+                            class="relative w-48 h-32 overflow-hidden rounded-2xl border-2 border-riak-honey/20 bg-gray-50 flex-shrink-0 flex items-center justify-center">
+                            @if ($video_file)
+                                <video src="{{ $video_file->temporaryUrl() }}" class="w-full h-full object-cover"
+                                    controls></video>
+                            @elseif($oldVideoFile)
+                                <video src="{{ asset('storage/' . $oldVideoFile) }}"
+                                    class="w-full h-full object-cover" controls></video>
+                            @else
+                                <div
+                                    class="w-full h-full flex items-center justify-center text-riak-khaki italic text-[10px]">
+                                    Belum Ada Video
+                                </div>
+                            @endif
 
-                    <div class="flex items-center gap-4">
-                        <input type="file" wire:model="video_file" id="upload-video"
-                            class="text-xs text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 transition-all cursor-pointer w-full">
+                            {{-- Loading State Spinner --}}
+                            <div wire:loading wire:target="video_file"
+                                class="absolute inset-0 bg-white/80 flex items-center justify-center">
+                                <div
+                                    class="w-5 h-5 border-2 border-riak-army border-t-transparent rounded-full animate-spin">
+                                </div>
+                            </div>
+                        </div>
 
-                        <div wire:loading wire:target="video_file" class="flex items-center">
-                            <svg class="animate-spin h-4 w-4 text-riak-army" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10"
-                                    stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                </path>
-                            </svg>
+                        <div class="flex-grow space-y-2">
+                            <input type="file" wire:model="video_file" id="upload-video" accept="video/*"
+                                class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
+                            <p class="text-[9px] text-riak-khaki italic">Format berkas video MP4, MOV, atau AVI
+                                (Maksimal 20MB)</p>
+                            @error('video_file')
+                                <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
-
-                    @if ($oldVideoFile)
-                        <p class="text-[10px] text-riak-army/70 mt-1 font-mono truncate">File saat ini: <a
-                                href="{{ asset('storage/' . $oldVideoFile) }}" target="_blank"
-                                class="underline hover:text-riak-honey">Lihat Video</a></p>
-                    @endif
-
-                    <p class="text-[9px] text-riak-khaki italic text-opacity-60 block">Format: MP4, MOV, AVI (Maks.
-                        20MB)</p>
-                    @error('video_file')
-                        <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 {{-- Input File Sertifikat Keaslian --}}
-                <div class="space-y-2 relative">
+                <div class="space-y-4 pt-6 border-t border-riak-honey/10">
                     <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">File
                         Sertifikat Keaslian Digital</label>
+                    <div class="flex items-start gap-8">
+                        <div
+                            class="relative w-48 h-32 overflow-hidden rounded-2xl border-2 border-riak-honey/20 bg-gray-50 flex-shrink-0 flex items-center justify-center">
+                            @if ($sertifikat_file)
+                                @if (in_array($sertifikat_file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'webp']))
+                                    <img src="{{ $sertifikat_file->temporaryUrl() }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    {{-- Preview Icon jika file berupa PDF --}}
+                                    <div
+                                        class="w-full h-full flex flex-col items-center justify-center bg-riak-cream/20 p-4 text-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-riak-army/60 mb-1"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <span
+                                            class="text-[9px] text-riak-army font-mono truncate max-w-full px-2">{{ $sertifikat_file->getClientOriginalName() }}</span>
+                                    </div>
+                                @endif
+                            @elseif($oldSertifikatFile)
+                                @if (pathinfo($oldSertifikatFile, PATHINFO_EXTENSION) === 'pdf')
+                                    <a href="{{ asset('storage/' . $oldSertifikatFile) }}" target="_blank"
+                                        class="w-full h-full flex flex-col items-center justify-center bg-riak-cream/20 hover:bg-riak-honey/10 transition-colors p-4 text-center group">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="h-8 w-8 text-riak-army/60 group-hover:text-riak-army mb-1 transition-colors"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 10v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span class="text-[9px] text-riak-army underline font-medium">Lihat PDF Saat
+                                            Ini</span>
+                                    </a>
+                                @else
+                                    <img src="{{ asset('storage/' . $oldSertifikatFile) }}"
+                                        class="w-full h-full object-cover">
+                                @endif
+                            @else
+                                <div
+                                    class="w-full h-full flex items-center justify-center text-riak-khaki italic text-[10px]">
+                                    Belum Ada Berkas
+                                </div>
+                            @endif
 
-                    <div class="flex items-center gap-4">
-                        <input type="file" wire:model="sertifikat_file" id="upload-sertifikat"
-                            class="text-xs text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 transition-all cursor-pointer w-full">
+                            {{-- Loading State Spinner --}}
+                            <div wire:loading wire:target="sertifikat_file"
+                                class="absolute inset-0 bg-white/80 flex items-center justify-center">
+                                <div
+                                    class="w-5 h-5 border-2 border-riak-army border-t-transparent rounded-full animate-spin">
+                                </div>
+                            </div>
+                        </div>
 
-                        <div wire:loading wire:target="sertifikat_file" class="flex items-center">
-                            <svg class="animate-spin h-4 w-4 text-riak-army" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10"
-                                    stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                </path>
-                            </svg>
+                        <div class="flex-grow space-y-2">
+                            <input type="file" wire:model="sertifikat_file" id="upload-sertifikat"
+                                accept=".pdf,image/*"
+                                class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
+                            <p class="text-[9px] text-riak-khaki italic">Format berkas PDF, JPG, PNG, atau WEBP
+                                (Maksimal 2MB)</p>
+                            @error('sertifikat_file')
+                                <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
-
-                    @if ($oldSertifikatFile)
-                        <p class="text-[10px] text-riak-army/70 mt-1 font-mono truncate">File saat ini: <a
-                                href="{{ asset('storage/' . $oldSertifikatFile) }}" target="_blank"
-                                class="underline hover:text-riak-honey">Lihat Sertifikat Keaslian</a></p>
-                    @endif
-
-                    <p class="text-[9px] text-riak-khaki italic text-opacity-60 block">Format: PDF, JPG, PNG (Maks.
-                        2MB)</p>
-                    @error('sertifikat_file')
-                        <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
-                    @enderror
                 </div>
             </div>
         </div>
