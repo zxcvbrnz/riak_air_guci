@@ -15,7 +15,7 @@ new class extends Component {
     public $variants = [];
 
     // Properti berkas baru (berupa berkas temporary uploads)
-    public $video_url; // Digunakan sebagai file upload gambar instruksi/video
+    public $video_url; // Digunakan sebagai file upload video panduan
     public $motif_url; // Digunakan sebagai file upload gambar motif
 
     // Properti untuk melacak berkas lama yang tersimpan di DB saat mode Edit
@@ -35,7 +35,7 @@ new class extends Component {
             $this->link_shopee = $this->kit->link_shopee;
             $this->oldImage = $this->kit->image;
 
-            // Memuat gambar dashboard yang sudah ada di database
+            // Memuat data dashboard yang sudah ada di database
             if ($this->kit->dashboard) {
                 $this->oldVideoUrl = $this->kit->dashboard->video_url;
                 $this->oldMotifUrl = $this->kit->dashboard->motif_url;
@@ -82,14 +82,14 @@ new class extends Component {
                 'image' => $this->kit ? 'nullable|image|max:1024' : 'required|image|max:1024',
                 'variants.*.variant_name' => 'required|string|max:255',
 
-                // Validasi diubah ke tipe image berkas karena mengunggah gambar langsung
-                'video_url' => $this->oldVideoUrl ? 'nullable|image|max:2048' : 'required|image|max:2048',
+                // Validasi diubah ke tipe mimetypes video dan batas ukurannya dinaikkan (misal: max:20480 untuk 20MB)
+                'video_url' => $this->oldVideoUrl ? 'nullable|mimetypes:video/mp4,video/quicktime,video/webm|max:20480' : 'required|mimetypes:video/mp4,video/quicktime,video/webm|max:20480',
                 'motif_url' => $this->oldMotifUrl ? 'nullable|image|max:2048' : 'required|image|max:2048',
             ],
             [
                 'variants.*.variant_name.required' => 'Nama varian wajib diisi.',
-                'video_url.required' => 'Gambar panduan dashboard wajib diunggah.',
-                'video_url.image' => 'Berkas panduan video/skema harus berupa gambar.',
+                'video_url.required' => 'Berkas video panduan dashboard wajib diunggah.',
+                'video_url.mimetypes' => 'Berkas panduan harus berupa video (mp4, mov, atau webm).',
                 'motif_url.required' => 'Gambar berkas pola motif wajib diunggah.',
                 'motif_url.image' => 'Berkas berkas pola motif harus berupa gambar.',
             ],
@@ -116,9 +116,9 @@ new class extends Component {
         // 2. Siapkan payload path untuk kit_dashboards
         $dashboardData = [];
 
-        // Proses penyimpanan berkas video_url (gambar skema/panduan)
+        // Proses penyimpanan berkas video_url (Video Tutorial)
         if ($this->video_url instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-            $dashboardData['video_url'] = $this->video_url->store('kit-dashboards/guides', 'public');
+            $dashboardData['video_url'] = $this->video_url->store('kit-dashboards/videos', 'public');
         } else {
             $dashboardData['video_url'] = $this->oldVideoUrl;
         }
@@ -274,7 +274,7 @@ new class extends Component {
                                 <button type="button" wire:click="removeVariant({{ $index }})"
                                     class="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24 " stroke="currentColor">
+                                        viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -310,7 +310,7 @@ new class extends Component {
                         </div>
                     </div>
                     <div class="flex-grow space-y-3">
-                        <input type="file" wire:model="image"
+                        <input type="file" wire:model="image" accept="image/*"
                             class="text-[10px] text-riak-khaki file:mr-6 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 transition-all cursor-pointer">
                         <p class="text-[10px] text-riak-khaki italic">High resolution JPG, PNG, or WEBP (Max 1MB)</p>
                         @error('image')
@@ -321,30 +321,32 @@ new class extends Component {
             </div>
         </div>
 
-        {{-- SECTION 2: DIUBAH KE INPUT UPLOAD GAMBAR DASHBOARD --}}
+        {{-- SECTION 2: LEARNING ASSETS (VIDEO PANDUAN & GAMBAR MOTIF) --}}
         <div class="bg-white p-10 rounded-[3rem] border border-riak-honey/10 shadow-sm space-y-10">
             <div class="border-b border-riak-honey/10 pb-2">
                 <h3 class="font-serif italic text-lg text-riak-army">Creative Kit Learning Assets</h3>
-                <p class="text-[10px] text-riak-khaki mt-0.5">Unggah aset gambar eksklusif panduan & motif yang akan
-                    tampil pada dashboard konsumen.</p>
+                <p class="text-[10px] text-riak-khaki mt-0.5">Unggah aset video panduan & gambar motif yang akan tampil
+                    pada dashboard konsumen.</p>
             </div>
 
             <div class="grid grid-cols-1 gap-10">
-                {{-- Input Berkas Gambar Panduan (Video URL Field) --}}
+                {{-- Input Berkas Video Panduan (diubah dari <img> ke <video>) --}}
                 <div class="space-y-4">
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Gambar Skema
-                        Panduan / Infografis (Simpan ke video_url)</label>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Video Panduan
+                        / Tutorial (Simpan ke video_url)</label>
                     <div class="flex items-start gap-8">
                         <div
-                            class="relative w-48 h-32 overflow-hidden rounded-2xl border-2 border-riak-honey/20 bg-gray-50 flex-shrink-0">
+                            class="relative w-48 h-32 overflow-hidden rounded-2xl border-2 border-riak-honey/20 bg-gray-50 flex-shrink-0 flex items-center justify-center">
                             @if ($video_url)
-                                <img src="{{ $video_url->temporaryUrl() }}" class="w-full h-full object-cover">
+                                <video src="{{ $video_url->temporaryUrl() }}" class="w-full h-full object-cover"
+                                    controls></video>
                             @elseif($oldVideoUrl)
-                                <img src="{{ asset('storage/' . $oldVideoUrl) }}" class="w-full h-full object-cover">
+                                <video src="{{ asset('storage/' . $oldVideoUrl) }}"
+                                    class="w-full h-full object-cover" controls></video>
                             @else
                                 <div
                                     class="w-full h-full flex items-center justify-center text-riak-khaki italic text-[10px]">
-                                    Belum Ada Gambar</div>
+                                    Belum Ada Video</div>
                             @endif
                             <div wire:loading wire:target="video_url"
                                 class="absolute inset-0 bg-white/80 flex items-center justify-center">
@@ -354,10 +356,10 @@ new class extends Component {
                             </div>
                         </div>
                         <div class="flex-grow space-y-2">
-                            <input type="file" wire:model="video_url"
+                            <input type="file" wire:model="video_url" accept="video/*"
                                 class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
-                            <p class="text-[9px] text-riak-khaki italic">Resolusi tinggi JPG, PNG, atau WEBP (Max 2MB)
-                            </p>
+                            <p class="text-[9px] text-riak-khaki italic">Format berkas video MP4, MOV, atau WEBM
+                                (Maksimal 20MB)</p>
                             @error('video_url')
                                 <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
                             @enderror
@@ -365,7 +367,7 @@ new class extends Component {
                     </div>
                 </div>
 
-                {{-- Input Berkas Gambar Motif (Motif URL Field) --}}
+                {{-- Input Berkas Gambar Motif --}}
                 <div class="space-y-4 pt-6 border-t border-riak-honey/10">
                     <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Gambar Pola /
                         Motif Cetak (Simpan ke motif_url)</label>
@@ -389,7 +391,7 @@ new class extends Component {
                             </div>
                         </div>
                         <div class="flex-grow space-y-2">
-                            <input type="file" wire:model="motif_url"
+                            <input type="file" wire:model="motif_url" accept="image/*"
                                 class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
                             <p class="text-[9px] text-riak-khaki italic">Resolusi tinggi JPG, PNG, atau WEBP (Max 2MB)
                             </p>
