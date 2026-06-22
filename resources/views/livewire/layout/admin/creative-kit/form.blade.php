@@ -2,7 +2,7 @@
 
 use App\Models\CreativeKit;
 use App\Models\KitVariant;
-use App\Models\KitDashboard; // Pastikan model KitDashboard di-import
+use App\Models\KitDashboard;
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 
@@ -12,18 +12,18 @@ new class extends Component {
     public ?CreativeKit $kit = null;
 
     public $name_id, $name_en, $level_id, $level_en, $description_id, $description_en, $price, $image, $oldImage, $link_shopee;
-
-    // Properti untuk menampung data variants secara dinamis
     public $variants = [];
 
-    // Properti baru sesuai migration kit_dashboards
-    public $video_url;
-    public $motif_url;
+    // Properti berkas baru (berupa berkas temporary uploads)
+    public $video_url; // Digunakan sebagai file upload gambar instruksi/video
+    public $motif_url; // Digunakan sebagai file upload gambar motif
+
+    // Properti untuk melacak berkas lama yang tersimpan di DB saat mode Edit
+    public $oldVideoUrl, $oldMotifUrl;
 
     public function mount($kitId = null)
     {
         if ($kitId) {
-            // Load CreativeKit bersama relasi variants dan dashboard utama
             $this->kit = CreativeKit::with(['variants', 'dashboard'])->findOrFail($kitId);
             $this->name_id = $this->kit->name_id;
             $this->name_en = $this->kit->name_en;
@@ -35,13 +35,12 @@ new class extends Component {
             $this->link_shopee = $this->kit->link_shopee;
             $this->oldImage = $this->kit->image;
 
-            // Load data dari tabel kit_dashboards jika sudah ada
+            // Memuat gambar dashboard yang sudah ada di database
             if ($this->kit->dashboard) {
-                $this->video_url = $this->kit->dashboard->video_url;
-                $this->motif_url = $this->kit->dashboard->motif_url;
+                $this->oldVideoUrl = $this->kit->dashboard->video_url;
+                $this->oldMotifUrl = $this->kit->dashboard->motif_url;
             }
 
-            // Mengambil variants yang sudah ada di database
             foreach ($this->kit->variants as $variant) {
                 $this->variants[] = [
                     'id' => $variant->id,
@@ -83,16 +82,16 @@ new class extends Component {
                 'image' => $this->kit ? 'nullable|image|max:1024' : 'required|image|max:1024',
                 'variants.*.variant_name' => 'required|string|max:255',
 
-                // Validasi untuk input field baru (kit_dashboards)
-                'video_url' => 'required|url',
-                'motif_url' => 'required|url',
+                // Validasi diubah ke tipe image berkas karena mengunggah gambar langsung
+                'video_url' => $this->oldVideoUrl ? 'nullable|image|max:2048' : 'required|image|max:2048',
+                'motif_url' => $this->oldMotifUrl ? 'nullable|image|max:2048' : 'required|image|max:2048',
             ],
             [
                 'variants.*.variant_name.required' => 'Nama varian wajib diisi.',
-                'video_url.required' => 'Link video panduan dashboard wajib diisi.',
-                'video_url.url' => 'Format link video harus berupa URL valid.',
-                'motif_url.required' => 'Link download motif/pattern wajib diisi.',
-                'motif_url.url' => 'Format link motif harus berupa URL valid.',
+                'video_url.required' => 'Gambar panduan dashboard wajib diunggah.',
+                'video_url.image' => 'Berkas panduan video/skema harus berupa gambar.',
+                'motif_url.required' => 'Gambar berkas pola motif wajib diunggah.',
+                'motif_url.image' => 'Berkas berkas pola motif harus berupa gambar.',
             ],
         );
 
@@ -114,14 +113,25 @@ new class extends Component {
         // 1. Simpan atau update CreativeKit
         $creativeKit = CreativeKit::updateOrCreate(['id' => $this->kit->id ?? null], $data);
 
-        // 2. Simpan atau urus data Kit Dashboards (Sesuai Migration)
-        KitDashboard::updateOrCreate(
-            ['creative_kit_id' => $creativeKit->id, 'kit_variant_id' => null], // Set null jika dashboard berlaku global untuk kit ini
-            [
-                'video_url' => $this->video_url,
-                'motif_url' => $this->motif_url,
-            ],
-        );
+        // 2. Siapkan payload path untuk kit_dashboards
+        $dashboardData = [];
+
+        // Proses penyimpanan berkas video_url (gambar skema/panduan)
+        if ($this->video_url instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $dashboardData['video_url'] = $this->video_url->store('kit-dashboards/guides', 'public');
+        } else {
+            $dashboardData['video_url'] = $this->oldVideoUrl;
+        }
+
+        // Proses penyimpanan berkas motif_url (gambar pola motif)
+        if ($this->motif_url instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $dashboardData['motif_url'] = $this->motif_url->store('kit-dashboards/motifs', 'public');
+        } else {
+            $dashboardData['motif_url'] = $this->oldMotifUrl;
+        }
+
+        // Simpan data ke tabel kit_dashboards
+        KitDashboard::updateOrCreate(['creative_kit_id' => $creativeKit->id, 'kit_variant_id' => null], $dashboardData);
 
         // 3. Simpan atau urus data Kit Variants
         $keptIds = [];
@@ -132,7 +142,7 @@ new class extends Component {
 
         $creativeKit->variants()->whereNotIn('id', $keptIds)->delete();
 
-        session()->flash('message', 'Creative Kit, Varian, dan Data Dashboard berhasil disimpan.');
+        session()->flash('message', 'Creative Kit, Varian, dan Aset Dashboard berhasil disimpan.');
         return $this->redirect(route('creative-kit.index'), navigate: true);
     }
 }; ?>
@@ -237,6 +247,7 @@ new class extends Component {
                 @enderror
             </div>
 
+            {{-- VARIANTS --}}
             <div class="pt-6 border-t border-riak-honey/10 space-y-4">
                 <div class="flex items-center justify-between">
                     <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Kit
@@ -274,11 +285,13 @@ new class extends Component {
                 </div>
             </div>
 
+            {{-- VISUALISASI THUMBNAIL UTAMA --}}
             <div class="pt-6 border-t border-riak-honey/10">
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey mb-6">Kit
                     Visualization</label>
                 <div class="flex items-center gap-10">
-                    <div class="relative w-40 h-40 overflow-hidden rounded-3xl border-2 border-riak-honey/30 shadow-md">
+                    <div
+                        class="relative w-40 h-40 overflow-hidden rounded-3xl border-2 border-riak-honey/30 shadow-md flex-shrink-0">
                         @if ($image)
                             <img src="{{ $image->temporaryUrl() }}" class="w-full h-full object-cover">
                         @elseif($oldImage)
@@ -308,37 +321,83 @@ new class extends Component {
             </div>
         </div>
 
-        {{-- SECTION 2: BARU - INPUT ASSET LEARNING DASHBOARD (Berdasarkan Migration kit_dashboards) --}}
-        <div class="bg-white p-10 rounded-[3rem] border border-riak-honey/10 shadow-sm space-y-6">
+        {{-- SECTION 2: DIUBAH KE INPUT UPLOAD GAMBAR DASHBOARD --}}
+        <div class="bg-white p-10 rounded-[3rem] border border-riak-honey/10 shadow-sm space-y-10">
             <div class="border-b border-riak-honey/10 pb-2">
-                <h3 class="font-serif italic text-lg text-riak-army">Creative Kit Learning Dashboard</h3>
-                <p class="text-[10px] text-riak-khaki mt-0.5">Materi eksklusif yang akan tampil pada halaman dashboard
-                    konsumen setelah melakukan aktivasi produk.</p>
+                <h3 class="font-serif italic text-lg text-riak-army">Creative Kit Learning Assets</h3>
+                <p class="text-[10px] text-riak-khaki mt-0.5">Unggah aset gambar eksklusif panduan & motif yang akan
+                    tampil pada dashboard konsumen.</p>
             </div>
 
-            <div class="grid grid-cols-1 gap-6">
-                {{-- Input Link Video Panduan --}}
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Link Video
-                        Tutorial (Video URL)</label>
-                    <input type="url" wire:model="video_url"
-                        placeholder="Contoh: https://www.youtube.com/watch?v=... atau Vimeo link"
-                        class="w-full rounded-2xl border-riak-honey/20 focus:ring-riak-army @error('video_url') border-red-400 @enderror">
-                    @error('video_url')
-                        <p class="text-red-500 text-[9px] italic">{{ $message }}</p>
-                    @enderror
+            <div class="grid grid-cols-1 gap-10">
+                {{-- Input Berkas Gambar Panduan (Video URL Field) --}}
+                <div class="space-y-4">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Gambar Skema
+                        Panduan / Infografis (Simpan ke video_url)</label>
+                    <div class="flex items-start gap-8">
+                        <div
+                            class="relative w-48 h-32 overflow-hidden rounded-2xl border-2 border-riak-honey/20 bg-gray-50 flex-shrink-0">
+                            @if ($video_url)
+                                <img src="{{ $video_url->temporaryUrl() }}" class="w-full h-full object-cover">
+                            @elseif($oldVideoUrl)
+                                <img src="{{ asset('storage/' . $oldVideoUrl) }}" class="w-full h-full object-cover">
+                            @else
+                                <div
+                                    class="w-full h-full flex items-center justify-center text-riak-khaki italic text-[10px]">
+                                    Belum Ada Gambar</div>
+                            @endif
+                            <div wire:loading wire:target="video_url"
+                                class="absolute inset-0 bg-white/80 flex items-center justify-center">
+                                <div
+                                    class="w-5 h-5 border-2 border-riak-army border-t-transparent rounded-full animate-spin">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-grow space-y-2">
+                            <input type="file" wire:model="video_url"
+                                class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
+                            <p class="text-[9px] text-riak-khaki italic">Resolusi tinggi JPG, PNG, atau WEBP (Max 2MB)
+                            </p>
+                            @error('video_url')
+                                <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Input Link File Motif --}}
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Link Unduhan
-                        File Motif / Pola (Motif URL)</label>
-                    <input type="url" wire:model="motif_url"
-                        placeholder="Contoh: https://drive.google.com/file/d/... atau link cloud storage berkas PDF"
-                        class="w-full rounded-2xl border-riak-honey/20 focus:ring-riak-army @error('motif_url') border-red-400 @enderror">
-                    @error('motif_url')
-                        <p class="text-red-500 text-[9px] italic">{{ $message }}</p>
-                    @enderror
+                {{-- Input Berkas Gambar Motif (Motif URL Field) --}}
+                <div class="space-y-4 pt-6 border-t border-riak-honey/10">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Gambar Pola /
+                        Motif Cetak (Simpan ke motif_url)</label>
+                    <div class="flex items-start gap-8">
+                        <div
+                            class="relative w-48 h-32 overflow-hidden rounded-2xl border-2 border-riak-honey/20 bg-gray-50 flex-shrink-0">
+                            @if ($motif_url)
+                                <img src="{{ $motif_url->temporaryUrl() }}" class="w-full h-full object-cover">
+                            @elseif($oldMotifUrl)
+                                <img src="{{ asset('storage/' . $oldMotifUrl) }}" class="w-full h-full object-cover">
+                            @else
+                                <div
+                                    class="w-full h-full flex items-center justify-center text-riak-khaki italic text-[10px]">
+                                    Belum Ada Gambar</div>
+                            @endif
+                            <div wire:loading wire:target="motif_url"
+                                class="absolute inset-0 bg-white/80 flex items-center justify-center">
+                                <div
+                                    class="w-5 h-5 border-2 border-riak-army border-t-transparent rounded-full animate-spin">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-grow space-y-2">
+                            <input type="file" wire:model="motif_url"
+                                class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
+                            <p class="text-[9px] text-riak-khaki italic">Resolusi tinggi JPG, PNG, atau WEBP (Max 2MB)
+                            </p>
+                            @error('motif_url')
+                                <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

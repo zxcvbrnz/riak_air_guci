@@ -3,7 +3,7 @@
 use App\Models\Product;
 use App\Models\ProductSize;
 use App\Models\ProductVariant;
-use App\Models\ProductDashboard; // Pastikan Model ini diimport
+use App\Models\ProductDashboard;
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 
@@ -27,9 +27,11 @@ new class extends Component {
     public $sizes = [];
     public $variants = [];
 
-    // Form Fields Baru dari tabel product_dashboards
-    public $video_url;
-    public $sertifikat_url;
+    // Form Fields Baru dari tabel product_dashboards (Berupa File)
+    public $video_file;
+    public $oldVideoFile;
+    public $sertifikat_file;
+    public $oldSertifikatFile;
 
     public function mount($productId = null)
     {
@@ -47,8 +49,8 @@ new class extends Component {
 
             // Load data dari relasi product dashboard jika ada
             if ($this->product->dashboard) {
-                $this->video_url = $this->product->dashboard->video_url;
-                $this->sertifikat_url = $this->product->dashboard->sertifikat_url;
+                $this->oldVideoFile = $this->product->dashboard->video_url; // diasumsikan field database tetap bernama video_url
+                $this->oldSertifikatFile = $this->product->dashboard->sertifikat_url; // diasumsikan field database tetap bernama sertifikat_url
             }
 
             // Load data ukuran yang sudah ada
@@ -111,15 +113,17 @@ new class extends Component {
                 'sizes.*.size' => 'required|string|max:50',
                 'variants.*.variant_name' => 'required|string|max:100',
 
-                // Validasi Tambahan untuk field Dashboard
-                'video_url' => 'required|url',
-                'sertifikat_url' => 'required|url',
+                // Validasi Berkas Berupa File/Video
+                'video_file' => $this->product && $this->oldVideoFile ? 'nullable|file|mimes:mp4,mov,avi|max:20480' : 'required|file|mimes:mp4,mov,avi|max:20480', // Maks 20MB
+                'sertifikat_file' => $this->product && $this->oldSertifikatFile ? 'nullable|file|mimes:pdf,jpg,png|max:2048' : 'required|file|mimes:pdf,jpg,png|max:2048', // Maks 2MB
             ],
             [
                 'sizes.*.size.required' => 'Opsi ukuran wajib diisi atau hapus baris ini.',
                 'variants.*.variant_name.required' => 'Opsi varian wajib diisi atau hapus baris ini.',
-                'video_url.required' => 'Link video tutorial wajib diisi untuk dashboard member.',
-                'sertifikat_url.required' => 'Link unduhan sertifikat wajib diisi.',
+                'video_file.required' => 'Berkas video tutorial wajib diunggah untuk dashboard member.',
+                'video_file.max' => 'Ukuran video maksimal adalah 20MB.',
+                'sertifikat_file.required' => 'Berkas sertifikat keaslian wajib diunggah.',
+                'sertifikat_file.max' => 'Ukuran sertifikat maksimal adalah 2MB.',
             ],
         );
 
@@ -140,14 +144,23 @@ new class extends Component {
         // 1. Simpan atau Update Produk Utama
         $product = Product::updateOrCreate(['id' => $this->product->id ?? null], $data);
 
+        // Persiapan data untuk Dashboard
+        $dashboardData = [];
+
+        if ($this->video_file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $dashboardData['video_url'] = $this->video_file->store('products/videos', 'public');
+        } else {
+            $dashboardData['video_url'] = $this->oldVideoFile;
+        }
+
+        if ($this->sertifikat_file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $dashboardData['sertifikat_url'] = $this->sertifikat_file->store('products/certificates', 'public');
+        } else {
+            $dashboardData['sertifikat_url'] = $this->oldSertifikatFile;
+        }
+
         // 2. Simpan atau Update Data Dashboard Terkait (Product Dashboard)
-        ProductDashboard::updateOrCreate(
-            ['product_id' => $product->id],
-            [
-                'video_url' => $this->video_url,
-                'sertifikat_url' => $this->sertifikat_url,
-            ],
-        );
+        ProductDashboard::updateOrCreate(['product_id' => $product->id], $dashboardData);
 
         // 3. Sinkronisasi Data Ukuran (Product Sizes)
         $keepSizeIds = [];
@@ -362,35 +375,77 @@ new class extends Component {
             </div>
         </div>
 
-        {{-- SECTION 2: INPUT BARU UNTUK MEMBER DASHBOARD RESOURCE (Berdasarkan Migration) --}}
+        {{-- SECTION 2: INPUT BERKAS MEMBER DASHBOARD RESOURCE --}}
         <div class="bg-white p-8 rounded-[2.5rem] border border-riak-honey/10 shadow-sm space-y-6">
             <div class="border-b border-riak-honey/10 pb-2">
                 <h3 class="font-serif italic text-lg text-riak-army">Konten Dashboard Eksklusif</h3>
-                <p class="text-[10px] text-riak-khaki mt-0.5">Input ini digunakan untuk memunculkan materi pembelajaran
-                    pada kelas online/dashboard member yang mengklaim kode produk ini.</p>
+                <p class="text-[10px] text-riak-khaki mt-0.5">Unggah berkas pembelajaran untuk dashboard member yang
+                    mengklaim kode produk ini.</p>
             </div>
 
-            <div class="space-y-4">
-                {{-- Input Link Video Tutorial --}}
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Link Video
-                        Panduan / Workshop (URL)</label>
-                    <input type="url" wire:model="video_url"
-                        placeholder="Contoh: https://www.youtube.com/watch?v=... atau link streaming direct"
-                        class="w-full rounded-xl border-riak-honey/20 focus:ring-riak-army @error('video_url') border-red-400 @enderror">
-                    @error('video_url')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {{-- Input File Video Tutorial --}}
+                <div class="space-y-2 relative">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">File Video
+                        Panduan / Workshop</label>
+
+                    <div class="flex items-center gap-4">
+                        <input type="file" wire:model="video_file" id="upload-video"
+                            class="text-xs text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 transition-all cursor-pointer w-full">
+
+                        <div wire:loading wire:target="video_file" class="flex items-center">
+                            <svg class="animate-spin h-4 w-4 text-riak-army" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    @if ($oldVideoFile)
+                        <p class="text-[10px] text-riak-army/70 mt-1 font-mono truncate">File saat ini: <a
+                                href="{{ asset('storage/' . $oldVideoFile) }}" target="_blank"
+                                class="underline hover:text-riak-honey">Lihat Video</a></p>
+                    @endif
+
+                    <p class="text-[9px] text-riak-khaki italic text-opacity-60 block">Format: MP4, MOV, AVI (Maks.
+                        20MB)</p>
+                    @error('video_file')
                         <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
-                {{-- Input Link Sertifikat --}}
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">Link Unduhan
-                        Sertifikat Digital Keaslian (URL)</label>
-                    <input type="url" wire:model="sertifikat_url"
-                        placeholder="Contoh: https://drive.google.com/file/d/... atau link berkas berkredensial"
-                        class="w-full rounded-xl border-riak-honey/20 focus:ring-riak-army @error('sertifikat_url') border-red-400 @enderror">
-                    @error('sertifikat_url')
+                {{-- Input File Sertifikat Keaslian --}}
+                <div class="space-y-2 relative">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-riak-honey">File
+                        Sertifikat Keaslian Digital</label>
+
+                    <div class="flex items-center gap-4">
+                        <input type="file" wire:model="sertifikat_file" id="upload-sertifikat"
+                            class="text-xs text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 transition-all cursor-pointer w-full">
+
+                        <div wire:loading wire:target="sertifikat_file" class="flex items-center">
+                            <svg class="animate-spin h-4 w-4 text-riak-army" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    @if ($oldSertifikatFile)
+                        <p class="text-[10px] text-riak-army/70 mt-1 font-mono truncate">File saat ini: <a
+                                href="{{ asset('storage/' . $oldSertifikatFile) }}" target="_blank"
+                                class="underline hover:text-riak-honey">Lihat Sertifikat Keaslian</a></p>
+                    @endif
+
+                    <p class="text-[9px] text-riak-khaki italic text-opacity-60 block">Format: PDF, JPG, PNG (Maks.
+                        2MB)</p>
+                    @error('sertifikat_file')
                         <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -401,7 +456,8 @@ new class extends Component {
         <div class="flex justify-end items-center gap-6">
             <a href="{{ route('product.index') }}" wire:navigate
                 class="text-[10px] font-bold uppercase text-riak-khaki hover:text-riak-army transition-colors">Batal</a>
-            <button type="submit" wire:loading.attr="disabled" wire:target="save, image"
+            <button type="submit" wire:loading.attr="disabled"
+                wire:target="save, image, video_file, sertifikat_file"
                 class="relative px-12 py-4 bg-riak-army text-riak-cream rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-xl hover:bg-riak-honey transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group">
                 <span wire:loading.remove wire:target="save">Simpan Produk & Dashboard</span>
                 <span wire:loading wire:target="save" class="flex items-center gap-2">
