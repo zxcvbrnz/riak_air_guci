@@ -69,6 +69,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-creative-kits/{creativeKitId}/edit', 'form-creative-kit')
         ->name('creative-kit.edit');
 
+    Route::view('manage-creative-kits/{creativeKitId}/unique-codes', 'kit-unique-code')
+        ->name('creative-kit.unique-codes');
+
     Route::view('manage-movement', 'manage-movement-school')
         ->name('movement-school.index');
 

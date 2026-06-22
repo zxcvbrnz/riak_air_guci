@@ -42,4 +42,19 @@ class CreativeKit extends Model
         $locale = App::getLocale();
         return $this->{"description_{$locale}"} ?? $this->description_id;
     }
+
+    public function uniqueCodes()
+    {
+        return $this->hasMany(UniqueCode::class);
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(KitVariant::class);
+    }
+
+    public function dashboards()
+    {
+        return $this->hasOne(KitDashboard::class);
+    }
 }
