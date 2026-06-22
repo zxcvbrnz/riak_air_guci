@@ -41,7 +41,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
-    public function dashboards()
+    public function dashboard()
     {
         return $this->hasOne(ProductDashboard::class);
     }

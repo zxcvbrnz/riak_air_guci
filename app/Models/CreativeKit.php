@@ -53,7 +53,7 @@ class CreativeKit extends Model
         return $this->hasMany(KitVariant::class);
     }
 
-    public function dashboards()
+    public function dashboard()
     {
         return $this->hasOne(KitDashboard::class);
     }
