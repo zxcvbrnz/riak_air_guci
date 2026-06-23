@@ -99,6 +99,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-schedule/create', 'form-internal-schedule')
         ->name('internal-schedule.create');
 
+    Route::view('verifikasi-karya', 'verifikasi-karya')
+        ->name('verifikasi-karya.index');
+
     Route::view('manage-schedule/{scheduleId}/edit', 'form-internal-schedule')
         ->name('internal-schedule.edit');
 });
@@ -108,6 +111,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'member', 'roleuser']
     // tambahkan route untuk halaman user disini
     Route::view('dashboard', 'dashboard')
         ->name('dashboard.user');
+
+    Route::view('upload-karya', 'upload-karya')
+        ->name('upload-karya');
 });
 
 Route::view('profile', 'profile')
