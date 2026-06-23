@@ -11,7 +11,7 @@ new class extends Component {
     {
         return [
             // Menggunakan withCount untuk menghitung jumlah relasi members secara efisien
-            'users' => User::where('role', 'user')->withCount('member')->latest()->paginate(10),
+            'users' => User::where('role', 'user')->latest()->paginate(10),
         ];
     }
 }; ?>
@@ -71,7 +71,7 @@ new class extends Component {
 
                             {{-- Status Klaim Member (Mengecek jika members_count > 0) --}}
                             <td class="p-6">
-                                @if ($user->members_count > 0)
+                                @if ($user->member)
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-green-50 text-green-700 border border-green-100">
                                         <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
