@@ -11,7 +11,7 @@ new class extends Component {
     {
         return [
             // Menggunakan withCount untuk menghitung jumlah relasi members secara efisien
-            'users' => User::where('role', 'user')->withCount('members')->latest()->paginate(10),
+            'users' => User::where('role', 'user')->withCount('member')->latest()->paginate(10),
         ];
     }
 }; ?>
