@@ -59,6 +59,10 @@ new class extends Component {
                     </x-sidebar-link>
 
                     @if (auth()->user()->role === 'admin')
+                        <x-sidebar-link :href="route('user.index')" :active="request()->routeIs('user.*')"
+                            icon="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z M3 5.25a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v13.5a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5.25Z">
+                            Kelola User
+                        </x-sidebar-link>
                         <x-sidebar-link :href="route('trip.index')" :active="request()->routeIs('trip.*')"
                             icon="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z M3 5.25a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v13.5a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5.25Z">
                             Kelola Trip

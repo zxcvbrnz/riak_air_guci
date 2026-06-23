@@ -84,6 +84,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::view('manage-maestro', 'manage-artisan')
         ->name('artisan.index');
 
+    Route::view('manage-user', 'manage-user')
+        ->name('user.index');
+
     Route::view('manage-maestro/create', 'form-artisan')
         ->name('artisan.create');
 
