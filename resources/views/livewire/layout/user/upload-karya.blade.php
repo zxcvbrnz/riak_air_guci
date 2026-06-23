@@ -62,7 +62,7 @@ new class extends Component {
 
         return [
             'creativeKits' => CreativeKit::select('id', 'name_id')->get(),
-            'pendingKarya' => $pendingKarya, // Dilempar ke blade view
+            'pendingKarya' => $pendingKarya,
             'myKaryas' => KitKarya::with('creativeKit')
                 ->where('user_id', auth()->id())
                 ->latest()
@@ -76,8 +76,29 @@ new class extends Component {
         <h2 class="font-serif italic text-2xl text-[#283618]">Submit Your Masterpiece</h2>
     </x-slot>
 
+    {{-- BARIS TOMBOL UTAMA (SELALU MUNCUL DI ATAS HALAMAN) --}}
+    <div
+        class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+        <div class="space-y-0.5">
+            <h4 class="font-serif italic text-base text-[#283618]">Butuh Inspirasi?</h4>
+            <p class="text-[10px] text-gray-400">Lihat hasil karya kreatif dari user lain yang telah terverifikasi oleh
+                tim ahli.</p>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="#" wire:navigate
+                class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#FEFAE0] text-[#283618] hover:bg-[#DDA15E]/20 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border border-[#283618]/10 w-full sm:w-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#DDA15E]" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Jelajahi Inspirasi Kreator Lain
+            </a>
+        </div>
+    </div>
+
     {{-- Alert Flash Message Global --}}
-    <div class="space-y-4 mt-6">
+    <div class="space-y-4">
         @if (session()->has('message'))
             <div
                 class="bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-2xl text-xs font-medium flex items-center gap-3">
@@ -103,8 +124,9 @@ new class extends Component {
         @endif
     </div>
 
-    {{-- Kondisional: Jika ada karya yang pending, sembunyikan form dan tampilkan status lock --}}
+    {{-- KONDISIONAL FORM UPLOAD / LOCK PANEL --}}
     @if ($pendingKarya)
+        {{-- Tampilan saat pengunggahan dikunci (Menunggu admin) --}}
         <div
             class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm flex flex-col items-center text-center space-y-4">
             <div
@@ -116,8 +138,8 @@ new class extends Component {
                             d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                 @else
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 animate-spin-slow" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3-3m0 0l3 3m-3-3v12" />
                     </svg>
@@ -137,7 +159,7 @@ new class extends Component {
             </div>
         </div>
     @else
-        {{-- 1. FORM UPLOAD KARYA (HANYA MUNCUL JIKA TIDAK ADA PENDING KARYA) --}}
+        {{-- Tampilan Form aktif normal --}}
         <form wire:submit="save" class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm space-y-8">
             <div>
                 <h3 class="font-serif italic text-lg text-[#283618]">Pamerkan Karya Kreatifmu</h3>
@@ -225,11 +247,12 @@ new class extends Component {
                 <thead>
                     <tr class="border-b border-gray-100 bg-gray-50/50">
                         <th class="p-6 text-[10px] font-bold uppercase tracking-widest text-[#DDA15E] w-32">Foto</th>
-                        <th class="p-6 text-[10px] font-bold uppercase tracking-widest text-[#DDA15E]">Creative Kit</th>
+                        <th class="p-6 text-[10px] font-bold uppercase tracking-widest text-[#DDA15E]">Creative Kit
+                        </th>
                         <th class="p-6 text-[10px] font-bold uppercase tracking-widest text-[#DDA15E]">Tanggal Unggah
                         </th>
-                        <th class="p-6 text-[10px] font-bold uppercase tracking-widest text-[#DDA15E]">Status Verifikasi
-                        </th>
+                        <th class="p-6 text-[10px] font-bold uppercase tracking-widest text-[#DDA15E]">Status
+                            Verifikasi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
