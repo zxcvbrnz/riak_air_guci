@@ -9,6 +9,7 @@ use App\Livewire\Pages\CulturalTripDetail;
 use App\Livewire\Pages\TheGallery;
 use App\Livewire\Pages\TheHeritage;
 use App\Livewire\Pages\TheMovement;
+use App\Livewire\Pages\TheArt;
 use App\Livewire\UniqueCodeInput;
 
 // Route::view('/', 'welcome');
@@ -133,6 +134,8 @@ Route::group(['prefix' => '{locale}', 'middleware' => SetLocale::class], functio
 
     Route::get('/gallery', TheGallery::class)->name('gallery');
     Route::get('/gallery/cultural-trip/{slug}', CulturalTripDetail::class)->name('trip.show');
+
+    Route::get('/art', TheArt::class)->name('art');
 
     Route::get('/movement', TheMovement::class)->name('movement');
     Route::get('/movement/goes-to-school/{movementSchool:slug}', MovementDetail::class)->name('movement.show');

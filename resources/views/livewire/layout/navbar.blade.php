@@ -53,8 +53,8 @@
                         Gerakan
                     @endid @en The Movement @enden
                 </a>
-                <a href="{{ route('movement') }}" wire:navigate
-                    class="transition-colors {{ Route::is('movement') ? 'text-riak-honey' : 'hover:text-riak-honey' }}">
+                <a href="{{ route('art') }}" wire:navigate
+                    class="transition-colors {{ Route::is('art') ? 'text-riak-honey' : 'hover:text-riak-honey' }}">
                     @id
                         Karya
                     @endid @en The Art @enden
@@ -182,8 +182,8 @@
                     Gerakan
                 @endid @en The Movement @enden
             </a>
-            <a href="{{ route('movement') }}" wire:navigate @click="mobileMenu = false"
-                class="{{ Route::is('movement') ? 'text-riak-honey' : '' }} hover:text-riak-honey tracking-widest italic">
+            <a href="{{ route('art') }}" wire:navigate @click="mobileMenu = false"
+                class="{{ Route::is('art') ? 'text-riak-honey' : '' }} hover:text-riak-honey tracking-widest italic">
                 @id
                     Karya
                 @endid @en The Art @enden
