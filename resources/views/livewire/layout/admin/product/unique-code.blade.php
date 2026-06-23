@@ -27,6 +27,9 @@ new class extends Component {
             'product_id' => $this->productId,
             'code' => strtoupper($this->code),
             'is_used' => false,
+            'type' => 'product',
+            'creative_kit_id' => null,
+            'kit_variant' => null,
         ]);
 
         $this->reset('code');
