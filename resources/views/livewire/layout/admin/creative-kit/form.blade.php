@@ -21,8 +21,9 @@ new class extends Component {
     // Properti untuk melacak berkas lama yang tersimpan di DB saat mode Edit
     public $oldVideoUrl, $oldMotifUrl;
 
-    public function mount($kitId = null)
+    public function mount($creativeKitId = null)
     {
+        $kitId = $creativeKitId;
         if ($kitId) {
             $this->kit = CreativeKit::with(['variants', 'dashboard'])->findOrFail($kitId);
             $this->name_id = $this->kit->name_id;

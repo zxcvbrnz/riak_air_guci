@@ -15,8 +15,9 @@ new class extends Component {
         'kitVariant' => 'required|string', // Validasi varian wajib dipilih
     ];
 
-    public function mount($kitId = null)
+    public function mount($creativeKitId = null)
     {
+        $kitId = $creativeKitId;
         $this->kitId = $kitId;
         // Memuat CreativeKit beserta daftar varian yang dimilikinya
         $this->kit = CreativeKit::with('variants')->findOrFail($kitId);
