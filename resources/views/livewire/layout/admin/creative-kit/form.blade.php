@@ -83,8 +83,8 @@ new class extends Component {
                 'image' => $this->kit ? 'nullable|image|max:1024' : 'required|image|max:1024',
                 'variants.*.variant_name' => 'required|string|max:255',
 
-                // Validasi diubah ke tipe mimetypes video dan batas ukurannya dinaikkan (misal: max:20480 untuk 20MB)
-                'video_url' => $this->oldVideoUrl ? 'nullable|mimetypes:video/mp4,video/quicktime,video/webm|max:20480' : 'required|mimetypes:video/mp4,video/quicktime,video/webm|max:20480',
+                // Validasi diubah ke tipe mimetypes video dan batas ukurannya dinaikkan (misal: max:51200 untuk 50MB)
+                'video_url' => $this->oldVideoUrl ? 'nullable|mimetypes:video/mp4,video/quicktime,video/webm|max:51200' : 'required|mimetypes:video/mp4,video/quicktime,video/webm|max:51200',
                 'motif_url' => $this->oldMotifUrl ? 'nullable|image|max:2048' : 'required|image|max:2048',
             ],
             [
@@ -92,6 +92,7 @@ new class extends Component {
                 'video_url.required' => 'Berkas video panduan dashboard wajib diunggah.',
                 'video_url.mimetypes' => 'Berkas panduan harus berupa video (mp4, mov, atau webm).',
                 'motif_url.required' => 'Gambar berkas pola motif wajib diunggah.',
+                'motif_url.max' => 'Ukuran video maksimal adalah 50MB.',
                 'motif_url.image' => 'Berkas berkas pola motif harus berupa gambar.',
             ],
         );
@@ -360,7 +361,7 @@ new class extends Component {
                             <input type="file" wire:model="video_url" accept="video/*"
                                 class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
                             <p class="text-[9px] text-riak-khaki italic">Format berkas video MP4, MOV, atau WEBM
-                                (Maksimal 20MB)</p>
+                                (Maksimal 50MB)</p>
                             @error('video_url')
                                 <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
                             @enderror

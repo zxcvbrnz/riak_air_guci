@@ -114,14 +114,14 @@ new class extends Component {
                 'variants.*.variant_name' => 'required|string|max:100',
 
                 // Validasi Berkas Berupa File/Video
-                'video_file' => $this->product && $this->oldVideoFile ? 'nullable|file|mimes:mp4,mov,avi|max:20480' : 'required|file|mimes:mp4,mov,avi|max:20480', // Maks 20MB
+                'video_file' => $this->product && $this->oldVideoFile ? 'nullable|file|mimes:mp4,mov,avi|max:51200' : 'required|file|mimes:mp4,mov,avi|max:51200', // Maks 50MB
                 'sertifikat_file' => $this->product && $this->oldSertifikatFile ? 'nullable|file|mimes:pdf,jpg,png|max:2048' : 'required|file|mimes:pdf,jpg,png|max:2048', // Maks 2MB
             ],
             [
                 'sizes.*.size.required' => 'Opsi ukuran wajib diisi atau hapus baris ini.',
                 'variants.*.variant_name.required' => 'Opsi varian wajib diisi atau hapus baris ini.',
                 'video_file.required' => 'Berkas video tutorial wajib diunggah untuk dashboard member.',
-                'video_file.max' => 'Ukuran video maksimal adalah 20MB.',
+                'video_file.max' => 'Ukuran video maksimal adalah 50MB.',
                 'sertifikat_file.required' => 'Berkas sertifikat keaslian wajib diunggah.',
                 'sertifikat_file.max' => 'Ukuran sertifikat maksimal adalah 2MB.',
             ],
@@ -417,7 +417,7 @@ new class extends Component {
                             <input type="file" wire:model="video_file" id="upload-video" accept="video/*"
                                 class="text-[10px] text-riak-khaki file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-riak-cream file:text-riak-army hover:file:bg-riak-honey/20 cursor-pointer">
                             <p class="text-[9px] text-riak-khaki italic">Format berkas video MP4, MOV, atau AVI
-                                (Maksimal 20MB)</p>
+                                (Maksimal 50MB)</p>
                             @error('video_file')
                                 <p class="text-red-500 text-[9px] italic mt-1">{{ $message }}</p>
                             @enderror
